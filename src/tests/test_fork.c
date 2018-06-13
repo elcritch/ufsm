@@ -36,12 +36,12 @@ void reset_flags()
     flag_xAB = false;
 }
 
-bool gA(ufsm_machine_t *m, ufsm_transition_t *t) { flag_gA = true; return gA_val; }
-bool g2(ufsm_machine_t *m, ufsm_transition_t *t) { flag_g2 = true; return g2_val; }
-void finalD(ufsm_machine_t *m, ufsm_transition_t *t) { flag_finalD = true; }
+bool gA(ufsm_machine_t *m, ufsm_trans_t *t) { flag_gA = true; return gA_val; }
+bool g2(ufsm_machine_t *m, ufsm_trans_t *t) { flag_g2 = true; return g2_val; }
+void finalD(ufsm_machine_t *m, ufsm_trans_t *t) { flag_finalD = true; }
 void eD(ufsm_machine_t *m, ufsm_state_t *t) { flag_eD = true; }
 void eC(ufsm_machine_t *m, ufsm_state_t *t) { flag_eC = true; }
-void finalC(ufsm_machine_t *m, ufsm_transition_t *t) { flag_finalC = true; }
+void finalC(ufsm_machine_t *m, ufsm_trans_t *t) { flag_finalC = true; }
 void eB2(ufsm_machine_t *m, ufsm_state_t *t) { flag_eB2 = true; }
 void xB2(ufsm_machine_t *m, ufsm_state_t *t) { flag_xB2 = true; }
 void eA2(ufsm_machine_t *m, ufsm_state_t *t) { flag_eA2 = true; }

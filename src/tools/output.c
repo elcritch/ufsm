@@ -268,7 +268,7 @@ static void ufsm_gen_regions(struct ufsm_region *region)
                 } else {
                     fprintf(fp_c, "  .action = &%s,\n", id_to_decl(t->action->id));
                     fprintf(fp_c, "  .defer = false,\n");
-                    fprintf(fp_h, "void %s(ufsm_machine_t *m, ufsm_transition_t *t);\n",t->action->name);
+                    fprintf(fp_h, "void %s(ufsm_machine_t *m, ufsm_trans_t *t);\n",t->action->name);
                 }
             } else {
                 fprintf(fp_c, "  .action = NULL,\n");
@@ -276,7 +276,7 @@ static void ufsm_gen_regions(struct ufsm_region *region)
             }
             if (t->guard) {
                 fprintf(fp_c, "  .guard = &%s,\n", id_to_decl(t->guard->id));
-                fprintf(fp_h, "bool %s(ufsm_machine_t *m, ufsm_transition_t *s);\n",t->guard->name);
+                fprintf(fp_h, "bool %s(ufsm_machine_t *m, ufsm_trans_t *s);\n",t->guard->name);
             } else {
                 fprintf(fp_c, "  .guard = NULL,\n");
             }

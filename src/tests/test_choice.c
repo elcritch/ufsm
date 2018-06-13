@@ -19,17 +19,17 @@ static void reset_flags()
     flag_e3 = false;
 }
 
-bool g1(ufsm_machine_t *m, ufsm_transition_t *t)
+bool g1(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     return g1_val;
 }
 
-bool g2(ufsm_machine_t *m, ufsm_transition_t *t)
+bool g2(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     return g2_val;
 }
 
-bool g3(ufsm_machine_t *m, ufsm_transition_t *t)
+bool g3(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     return g3_val;
 }

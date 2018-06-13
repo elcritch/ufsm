@@ -31,7 +31,7 @@ void dA_stop(ufsm_machine_t *m, ufsm_state_t *t)
     flag_dA_stop = true;
 }
 
-void final(ufsm_machine_t *m, ufsm_transition_t *t)
+void final(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     flag_final = true;
 }

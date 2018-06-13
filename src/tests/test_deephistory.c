@@ -37,7 +37,7 @@ static void reset_flags()
     flag_xA = false;
 }
 
-void final(ufsm_machine_t *m, ufsm_transition_t *t)
+void final(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     flag_final = true;
 }

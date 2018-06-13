@@ -75,11 +75,13 @@ struct ufsm_guard;
 struct ufsm_transition;
 struct ufsm_region;
 
-typedef struct ufsm_state ufsm_state_t;
+/* Public API Types */
 typedef struct ufsm_machine ufsm_machine_t;
+typedef struct ufsm_state ufsm_state_t;
+typedef struct ufsm_transition ufsm_trans_t;
+
 typedef struct ufsm_action ufsm_action_t;
 typedef struct ufsm_guard ufsm_guard_t;
-typedef struct ufsm_transition ufsm_transition_t;
 typedef struct ufsm_region ufsm_region_t;
 
 typedef bool (*ufsm_guard_func_t) (struct ufsm_machine *m, struct ufsm_transition  *t);

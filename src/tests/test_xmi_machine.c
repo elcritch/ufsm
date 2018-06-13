@@ -24,12 +24,12 @@ static void reset_flags(void)
 }
 
 
-bool Guard(ufsm_machine_t *m, ufsm_transition_t *s)
+bool Guard(ufsm_machine_t *m, ufsm_trans_t *s)
 {
     return true;
 }
 
-void DoAction(ufsm_machine_t *m, ufsm_transition_t *t)
+void DoAction(ufsm_machine_t *m, ufsm_trans_t *t)
 {
 }
 
@@ -43,22 +43,22 @@ void eC(ufsm_machine_t *m, ufsm_state_t *s)
     flag_eC = true;
 }
 
-void t1(ufsm_machine_t *m, ufsm_transition_t *t)
+void t1(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     flag_t1 = true;
 }
 
-void t2(ufsm_machine_t *m, ufsm_transition_t *t)
+void t2(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     flag_t2 = true;
 }
 
-void t3(ufsm_machine_t *m, ufsm_transition_t *t)
+void t3(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     flag_t3 = true;
 }
 
-void final(ufsm_machine_t *m, ufsm_transition_t *t)
+void final(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     flag_final = true;
 }

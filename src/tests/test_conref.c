@@ -25,22 +25,22 @@ void eC(ufsm_machine_t *m, ufsm_state_t *t)
     eCc++;
 }
 
-void t0(ufsm_machine_t *m, ufsm_transition_t *t)
+void t0(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     t0c++;
 }
 
-void t4(ufsm_machine_t *m, ufsm_transition_t *t)
+void t4(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     t4c++;
 }
 
-void t3(ufsm_machine_t *m, ufsm_transition_t *t)
+void t3(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     t3c++;
 }
 
-void t1(ufsm_machine_t *m, ufsm_transition_t *t)
+void t1(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     t1c++;
 }

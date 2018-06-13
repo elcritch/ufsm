@@ -39,7 +39,7 @@ void eD(ufsm_machine_t *m, ufsm_state_t *t)
     flag_eD = true;
 }
 
-void t1(ufsm_machine_t *m, ufsm_transition_t *t)
+void t1(ufsm_machine_t *m, ufsm_trans_t *t)
 {
     flag_t1 = true;
 }
