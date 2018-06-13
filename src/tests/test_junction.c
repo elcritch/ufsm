@@ -10,7 +10,7 @@ static bool flag_eC = false;
 static bool flag_eD = false;
 static bool flag_t1 = false;
 
-static void reset_flags(void)
+static void reset_flags()
 {
     flag_eA = false;
     flag_eB = false;
@@ -19,27 +19,27 @@ static void reset_flags(void)
     flag_t1 = false;
 }
 
-void eA(void)
+void eA(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eA = true;
 }
 
-void eB(void)
+void eB(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eB = true;
 }
 
-void eC(void)
+void eC(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eC = true;
 }
 
-void eD(void)
+void eD(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eD = true;
 }
 
-void t1(void)
+void t1(ufsm_machine_t *m, ufsm_transition_t *t)
 {
     flag_t1 = true;
 }

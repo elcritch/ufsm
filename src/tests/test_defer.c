@@ -6,7 +6,7 @@
 
 static bool flag_final = false;
 
-void final(void)
+void final(ufsm_machine_t *m, ufsm_transition_t *t)
 {
     flag_final = true;
 }

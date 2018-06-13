@@ -12,39 +12,39 @@ static bool g1_val = false;
 static bool g2_val = false;
 static bool g3_val = false;
 
-static void reset_flags(void)
+static void reset_flags()
 {
     flag_e1 = false;
     flag_e2 = false;
     flag_e3 = false;
 }
 
-bool g1(void)
+bool g1(ufsm_machine_t *m, ufsm_transition_t *t)
 {
     return g1_val;
 }
 
-bool g2(void)
+bool g2(ufsm_machine_t *m, ufsm_transition_t *t)
 {
     return g2_val;
 }
 
-bool g3(void)
+bool g3(ufsm_machine_t *m, ufsm_transition_t *t)
 {
     return g3_val;
 }
 
-void e1(void)
+void e1(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_e1 = true;
 }
 
-void e2(void)
+void e2(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_e2 = true;
 }
 
-void e3(void)
+void e3(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_e3 = true;
 }

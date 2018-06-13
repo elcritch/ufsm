@@ -17,20 +17,20 @@ static bool flag_on_data = false;
 static bool flag_q_lock = false;
 static bool flag_q_unlock = false;
 
-void xA(void) {}
-void eA(void) {}
+void xA(ufsm_machine_t *m, ufsm_state_t *t) {}
+void eA(ufsm_machine_t *m, ufsm_state_t *t) {}
 
-void on_data(void)
+void on_data()
 {
     flag_on_data = true;
 }
 
-void q_lock(void)
+void q_lock()
 {
     flag_q_lock = true;
 }
 
-void q_unlock(void)
+void q_unlock()
 {
     flag_q_unlock = true;
 }

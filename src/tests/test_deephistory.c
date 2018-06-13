@@ -19,7 +19,7 @@ static bool flag_xC = false;
 static bool flag_eA = false;
 static bool flag_xA = false;
 
-static void reset_flags(void)
+static void reset_flags()
 {
     flag_final = false;
     flag_eB = false;
@@ -37,72 +37,72 @@ static void reset_flags(void)
     flag_xA = false;
 }
 
-void final(void)
+void final(ufsm_machine_t *m, ufsm_transition_t *t)
 {
     flag_final = true;
 }
 
-void eB(void)
+void eB(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eB = true;
 }
 
-void eA2(void)
+void eA2(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eA2 = true;
 }
 
-void xA2(void)
+void xA2(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_xA2 = true;
 }
 
-void eA1(void)
+void eA1(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eA1 = true;
 }
 
-void xA1(void)
+void xA1(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_xA1 = true;
 }
 
-void eE(void)
+void eE(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eE = true;
 }
 
-void xE(void)
+void xE(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_xE = true;
 }
 
-void eD(void)
+void eD(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eD = true;
 }
 
-void xD(void)
+void xD(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_xD = true;
 }
 
-void eC(void)
+void eC(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eC = true;
 }
 
-void xC(void)
+void xC(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_xC = true;
 }
 
-void eA(void)
+void eA(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eA = true;
 }
 
-void xA(void)
+void xA(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_xA = true;
 }

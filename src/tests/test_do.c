@@ -8,12 +8,12 @@ static bool flag_final = false;
 static bool call_cb = true;
 static bool flag_dA_stop = false;
 
-void xA(void)
+void xA(ufsm_machine_t *m, ufsm_state_t *t)
 {
     assert (flag_dA_stop);
 }
 
-void eA(void)
+void eA(ufsm_machine_t *m, ufsm_state_t *t)
 {
     assert (!flag_dA_stop);
 }
@@ -26,12 +26,12 @@ void dA_start(struct ufsm_machine *m,
         cb(m,s);
 }
 
-void dA_stop(void)
+void dA_stop(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_dA_stop = true;
 }
 
-void final(void)
+void final(ufsm_machine_t *m, ufsm_transition_t *t)
 {
     flag_final = true;
 }

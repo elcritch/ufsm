@@ -75,9 +75,16 @@ struct ufsm_guard;
 struct ufsm_transition;
 struct ufsm_region;
 
-typedef bool (*ufsm_guard_func_t) (void);
-typedef void (*ufsm_action_func_t) (void);
-typedef void (*ufsm_entry_exit_func_t) (void);
+typedef struct ufsm_state ufsm_state_t;
+typedef struct ufsm_machine ufsm_machine_t;
+typedef struct ufsm_action ufsm_action_t;
+typedef struct ufsm_guard ufsm_guard_t;
+typedef struct ufsm_transition ufsm_transition_t;
+typedef struct ufsm_region ufsm_region_t;
+
+typedef bool (*ufsm_guard_func_t) (struct ufsm_machine *m, struct ufsm_transition  *t);
+typedef void (*ufsm_action_func_t) (struct ufsm_machine *m, struct ufsm_transition *t);
+typedef void (*ufsm_entry_exit_func_t) (struct ufsm_machine *m, struct ufsm_state *s);
 typedef void (*ufsm_queue_cb_t) (void);
 typedef uint32_t (*ufsm_doact_cb_t) (struct ufsm_machine *m, struct ufsm_state *s);
 typedef void (*ufsm_doact_func_t) (struct ufsm_machine *m,
@@ -247,6 +254,7 @@ ufsm_status_t ufsm_stack_pop(struct ufsm_stack *stack, void **item);
 ufsm_status_t ufsm_queue_init(struct ufsm_queue *q, uint32_t no_of_elements,
                                                uint32_t *data);
 
+ufsm_status_t ufsm_queue_put(struct ufsm_queue *q, uint32_t ev);
 ufsm_status_t ufsm_queue_put(struct ufsm_queue *q, uint32_t ev);
 ufsm_status_t ufsm_queue_get(struct ufsm_queue *q, uint32_t *ev);
 struct ufsm_queue * ufsm_get_queue(struct ufsm_machine *m);

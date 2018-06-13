@@ -103,7 +103,7 @@ static ufsm_status_t ufsm_enter_state(struct ufsm_machine *m,
         m->debug_enter_state(s);
 
     for (struct ufsm_entry_exit *e = s->entry; e; e = e->next)
-        e->f();
+        e->f(m, s);
 
     if (s->kind == UFSM_STATE_SIMPLE)
         state_completed = true;
@@ -141,10 +141,10 @@ inline static void ufsm_leave_state(struct ufsm_machine *m,
         m->debug_exit_state(s);
 
     for (struct ufsm_doact *d = s->doact; d; d = d->next)
-        d->f_stop();
+        d->f_stop(m, s);
 
     for (struct ufsm_entry_exit *e = s->exit; e; e = e->next)
-        e->f();
+        e->f(m, s);
 }
 
 
@@ -180,7 +180,7 @@ inline static bool ufsm_test_guards(struct ufsm_machine *m,
 
     for (struct ufsm_guard *g = t->guard; g; g = g->next) 
     {
-        bool guard_result = g->f();
+        bool guard_result = g->f(m, t);
 
         if (m->debug_guard)
             m->debug_guard(g, guard_result);
@@ -200,7 +200,7 @@ inline static void ufsm_execute_actions(struct ufsm_machine *m,
         if (m->debug_action)
             m->debug_action(a);
 
-        a->f();
+        a->f(m, t);
     }
 }
 

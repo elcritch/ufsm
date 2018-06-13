@@ -7,12 +7,12 @@
 static bool flag_xA = false;
 static bool flag_eA = false;
 
-void xA(void)
+void xA(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_xA = true;
 }
 
-void eA(void)
+void eA(ufsm_machine_t *m, ufsm_state_t *t)
 {
     flag_eA = true;
 }
