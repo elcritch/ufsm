@@ -37,72 +37,72 @@ static void reset_flags()
     flag_xA = false;
 }
 
-void final(ufsm_machine_t *m, ufsm_trans_t *t)
+void final(void *model, ufsm_trans_t *t)
 {
     flag_final = true;
 }
 
-void eB(ufsm_machine_t *m, ufsm_state_t *t)
+void eB(void *model, ufsm_state_t *t)
 {
     flag_eB = true;
 }
 
-void eA2(ufsm_machine_t *m, ufsm_state_t *t)
+void eA2(void *model, ufsm_state_t *t)
 {
     flag_eA2 = true;
 }
 
-void xA2(ufsm_machine_t *m, ufsm_state_t *t)
+void xA2(void *model, ufsm_state_t *t)
 {
     flag_xA2 = true;
 }
 
-void eA1(ufsm_machine_t *m, ufsm_state_t *t)
+void eA1(void *model, ufsm_state_t *t)
 {
     flag_eA1 = true;
 }
 
-void xA1(ufsm_machine_t *m, ufsm_state_t *t)
+void xA1(void *model, ufsm_state_t *t)
 {
     flag_xA1 = true;
 }
 
-void eE(ufsm_machine_t *m, ufsm_state_t *t)
+void eE(void *model, ufsm_state_t *t)
 {
     flag_eE = true;
 }
 
-void xE(ufsm_machine_t *m, ufsm_state_t *t)
+void xE(void *model, ufsm_state_t *t)
 {
     flag_xE = true;
 }
 
-void eD(ufsm_machine_t *m, ufsm_state_t *t)
+void eD(void *model, ufsm_state_t *t)
 {
     flag_eD = true;
 }
 
-void xD(ufsm_machine_t *m, ufsm_state_t *t)
+void xD(void *model, ufsm_state_t *t)
 {
     flag_xD = true;
 }
 
-void eC(ufsm_machine_t *m, ufsm_state_t *t)
+void eC(void *model, ufsm_state_t *t)
 {
     flag_eC = true;
 }
 
-void xC(ufsm_machine_t *m, ufsm_state_t *t)
+void xC(void *model, ufsm_state_t *t)
 {
     flag_xC = true;
 }
 
-void eA(ufsm_machine_t *m, ufsm_state_t *t)
+void eA(void *model, ufsm_state_t *t)
 {
     flag_eA = true;
 }
 
-void xA(ufsm_machine_t *m, ufsm_state_t *t)
+void xA(void *model, ufsm_state_t *t)
 {
     flag_xA = true;
 }

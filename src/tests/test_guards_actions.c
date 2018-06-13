@@ -22,17 +22,17 @@ static void reset_test_flags(void) {
     guard2_ret_val = true;
 }
 
-static bool guard1_f(struct ufsm_machine *m, struct ufsm_transition *t) {
+static bool guard1_f(void *model, struct ufsm_transition *t) {
     flag_guard1_called = true;
     return true;
 }
 
-static bool guard2_f(struct ufsm_machine *m, struct ufsm_transition *t) {
+static bool guard2_f(void *model, struct ufsm_transition *t) {
     flag_guard2_called = true;
     return guard2_ret_val;
 }
 
-static void action1_f(struct ufsm_machine *m, struct ufsm_transition *t) {
+static void action1_f(void *model, struct ufsm_transition *t) {
     flag_action1_called = true;
 }
 

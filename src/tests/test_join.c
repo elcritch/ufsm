@@ -6,16 +6,16 @@
 
 static bool flag_final = false;
 
-void final(ufsm_machine_t *m, ufsm_trans_t *t)
+void final(void *model, ufsm_trans_t *t)
 {
     flag_final = true;
 }
 
-void eAB(ufsm_machine_t *m, ufsm_state_t *t)
+void eAB(void *model, ufsm_state_t *t)
 {
 }
 
-void xAB(ufsm_machine_t *m, ufsm_state_t *t)
+void xAB(void *model, ufsm_state_t *t)
 {
 }
 

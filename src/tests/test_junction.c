@@ -19,27 +19,27 @@ static void reset_flags()
     flag_t1 = false;
 }
 
-void eA(ufsm_machine_t *m, ufsm_state_t *t)
+void eA(void *model, ufsm_state_t *t)
 {
     flag_eA = true;
 }
 
-void eB(ufsm_machine_t *m, ufsm_state_t *t)
+void eB(void *model, ufsm_state_t *t)
 {
     flag_eB = true;
 }
 
-void eC(ufsm_machine_t *m, ufsm_state_t *t)
+void eC(void *model, ufsm_state_t *t)
 {
     flag_eC = true;
 }
 
-void eD(ufsm_machine_t *m, ufsm_state_t *t)
+void eD(void *model, ufsm_state_t *t)
 {
     flag_eD = true;
 }
 
-void t1(ufsm_machine_t *m, ufsm_trans_t *t)
+void t1(void *model, ufsm_trans_t *t)
 {
     flag_t1 = true;
 }

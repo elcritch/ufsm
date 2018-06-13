@@ -13,12 +13,12 @@ static void reset_flags(void)
     flag_eE = false;
 }
 
-void eD(ufsm_machine_t *m, ufsm_state_t *t)
+void eD(void *model, ufsm_state_t *t)
 {
     flag_eD = true;
 }
 
-void eE(ufsm_machine_t *m, ufsm_state_t *t)
+void eE(void *model, ufsm_state_t *t)
 {
     flag_eE = true;
 }

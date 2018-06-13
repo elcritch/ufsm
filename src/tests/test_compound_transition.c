@@ -25,51 +25,51 @@ static void reset_flags(void)
     flag_t3 = false;
 }
 
-void t1(ufsm_machine_t *m, ufsm_trans_t *t) 
+void t1(void *m, ufsm_trans_t *t) 
 {
     flag_t1 = true;
     assert (flag_xS11 && !flag_eT1 && !flag_eT11 && !flag_eT111 &&
                 !flag_xS1 && flag_t1 && !flag_t2 && !flag_t3);
 }
-void t2(ufsm_machine_t *m, ufsm_trans_t *t) 
+void t2(void *m, ufsm_trans_t *t) 
 {
     flag_t2 = true;
     assert (flag_xS11 && !flag_eT1 && !flag_eT11 && !flag_eT111 &&
                 flag_xS1 && flag_t1 && flag_t2 && !flag_t3);
 }
 
-void t3(ufsm_machine_t *m, ufsm_trans_t *t) 
+void t3(void *m, ufsm_trans_t *t) 
 {
     flag_t3 = true;
     assert (flag_xS11 && flag_eT1 && flag_eT11 && !flag_eT111 &&
                 flag_xS1 && flag_t1 && flag_t2 && flag_t3);
 }
 
-void eT1(ufsm_machine_t *m, ufsm_state_t *t)
+void eT1(void *m, ufsm_state_t *t)
 {
     assert (flag_xS1 && flag_xS11);
     flag_eT1 = true;
 }
 
-void eT11(ufsm_machine_t *m, ufsm_state_t *t)
+void eT11(void *m, ufsm_state_t *t)
 {
     assert (flag_eT1);
     flag_eT11 = true;
 }
 
-void eT111(ufsm_machine_t *m, ufsm_state_t *t)
+void eT111(void *m, ufsm_state_t *t)
 {
     assert (flag_eT1 && flag_eT11);
     flag_eT111 = true;
 }
 
-void xS1(ufsm_machine_t *m, ufsm_state_t *t)
+void xS1(void *m, ufsm_state_t *t)
 {
     assert (flag_xS11);
     flag_xS1 = true;
 }
 
-void xS11(ufsm_machine_t *m, ufsm_state_t *t)
+void xS11(void *m, ufsm_state_t *t)
 {
  
     assert(!flag_eT1 && !flag_eT11 && !flag_eT111);
@@ -81,7 +81,7 @@ void xS11(ufsm_machine_t *m, ufsm_state_t *t)
 
 int main(int argc, char **argv) 
 {
-    ufsm_machine_t *m = get_StateMachine1();
+    void *m = get_StateMachine1();
  
     test_init(m);
     reset_flags();
