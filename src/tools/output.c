@@ -177,8 +177,8 @@ static void ufsm_gen_states(struct ufsm_state *state)
 
 
         fprintf(fp_c, "};\n");
-        fprintf(fp_h, "void %s_start(struct ufsm_machine *m, struct ufsm_state *s, ufsm_doact_cb_t cb);\n", d->name);
-        fprintf(fp_h, "void %s_stop(struct ufsm_machine *m, struct ufsm_state *s);\n", d->name);
+        fprintf(fp_h, "void %s_start(ufsm_machine_t *m, ufsm_state_t *s, ufsm_doact_cb_t cb);\n", d->name);
+        fprintf(fp_h, "void %s_stop(ufsm_machine_t *m, ufsm_state_t *s);\n", d->name);
 
     }
 
