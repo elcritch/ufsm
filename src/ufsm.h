@@ -14,17 +14,34 @@
 #include <stdbool.h>
 
 /* Error codes */
-#define UFSM_OK                        0
-#define UFSM_ERROR                     1
-#define UFSM_ERROR_NO_INIT_REGION      2
-#define UFSM_ERROR_UNKNOWN_STATE_KIND  3
-#define UFSM_ERROR_EVENT_NOT_PROCESSED 4
-#define UFSM_ERROR_LCA_NOT_FOUND       5
-#define UFSM_ERROR_STACK_OVERFLOW      6
-#define UFSM_ERROR_STACK_UNDERFLOW     7
-#define UFSM_ERROR_QUEUE_EMPTY         8
-#define UFSM_ERROR_QUEUE_FULL          9
-#define UFSM_ERROR_MACHINE_TERMINATED  10
+/* #define UFSM_OK                        0 */
+/* #define UFSM_ERROR                     1 */
+/* #define UFSM_ERROR_NO_INIT_REGION      2 */
+/* #define UFSM_ERROR_UNKNOWN_STATE_KIND  3 */
+/* #define UFSM_ERROR_EVENT_NOT_PROCESSED 4 */
+/* #define UFSM_ERROR_LCA_NOT_FOUND       5 */
+/* #define UFSM_ERROR_STACK_OVERFLOW      6 */
+/* #define UFSM_ERROR_STACK_UNDERFLOW     7 */
+/* #define UFSM_ERROR_QUEUE_EMPTY         8 */
+/* #define UFSM_ERROR_QUEUE_FULL          9 */
+/* #define UFSM_ERROR_MACHINE_TERMINATED  10 */
+
+enum ufsm_status {
+    UFSM_OK                        = 0, 
+    UFSM_ERROR                     = 1,
+    UFSM_ERROR_NO_INIT_REGION      = 2,
+    UFSM_ERROR_UNKNOWN_STATE_KIND  = 3,
+    UFSM_ERROR_EVENT_NOT_PROCESSED = 4,
+    UFSM_ERROR_LCA_NOT_FOUND       = 5,
+    UFSM_ERROR_STACK_OVERFLOW      = 6,
+    UFSM_ERROR_STACK_UNDERFLOW     = 7,
+    UFSM_ERROR_QUEUE_EMPTY         = 8,
+    UFSM_ERROR_QUEUE_FULL          = 9,
+    UFSM_ERROR_MACHINE_TERMINATED  = 10
+};
+
+typedef enum ufsm_status ufsm_status_t;
+
 extern const char *ufsm_errors[];
 
 /* Misc defines */
@@ -218,20 +235,20 @@ struct ufsm_state {
     struct ufsm_state *next;
 };
 
-uint32_t ufsm_init_machine(struct ufsm_machine *m);
-uint32_t ufsm_reset_machine(struct ufsm_machine *m);
-uint32_t ufsm_process (struct ufsm_machine *m, uint32_t ev);
-uint32_t ufsm_stack_init(struct ufsm_stack *stack,
+ufsm_status_t ufsm_init_machine(struct ufsm_machine *m);
+ufsm_status_t ufsm_reset_machine(struct ufsm_machine *m);
+ufsm_status_t ufsm_process (struct ufsm_machine *m, uint32_t ev);
+ufsm_status_t ufsm_stack_init(struct ufsm_stack *stack,
                             uint32_t no_of_elements,
                             void **stack_data);
-uint32_t ufsm_stack_push(struct ufsm_stack *stack, void *item);
-uint32_t ufsm_stack_pop(struct ufsm_stack *stack, void **item);
+ufsm_status_t ufsm_stack_push(struct ufsm_stack *stack, void *item);
+ufsm_status_t ufsm_stack_pop(struct ufsm_stack *stack, void **item);
 
-uint32_t ufsm_queue_init(struct ufsm_queue *q, uint32_t no_of_elements,
+ufsm_status_t ufsm_queue_init(struct ufsm_queue *q, uint32_t no_of_elements,
                                                uint32_t *data);
 
-uint32_t ufsm_queue_put(struct ufsm_queue *q, uint32_t ev);
-uint32_t ufsm_queue_get(struct ufsm_queue *q, uint32_t *ev);
+ufsm_status_t ufsm_queue_put(struct ufsm_queue *q, uint32_t ev);
+ufsm_status_t ufsm_queue_get(struct ufsm_queue *q, uint32_t *ev);
 struct ufsm_queue * ufsm_get_queue(struct ufsm_machine *m);
 
 #endif

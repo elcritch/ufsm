@@ -427,7 +427,7 @@ static uint32_t parse_region(xmlNode *n, struct ufsm_machine *m,
                                          bool deep_history) 
 {
     bool has_deep_history = deep_history;
-    uint32_t err = UFSM_OK;
+    ufsm_status_t err = UFSM_OK;
     struct ufsm_state *s = NULL;
     struct ufsm_state *s_last = NULL;
 
@@ -543,7 +543,7 @@ static uint32_t ufsmimport_pass2 (xmlNode *node, struct ufsm_machine *machines)
 {
     struct ufsm_region *r = NULL;
     uint32_t region_count = 0;
-    uint32_t err = UFSM_OK;
+    ufsm_status_t err = UFSM_OK;
 
     if (v) printf ("o Pass 2, analysing regions, states and sub machines...\n");
  
@@ -616,7 +616,7 @@ int main(int argc, char **argv)
     extern char *optarg;
     extern int optind, opterr, optopt;
     char c;
-    uint32_t err = UFSM_OK;
+    ufsm_status_t err = UFSM_OK;
     char *output_prefix = NULL;
     char *output_name = NULL;
     xmlDocPtr doc;
