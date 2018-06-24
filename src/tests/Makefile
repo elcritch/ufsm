@@ -21,7 +21,10 @@ UFSMIMPORT ?= ufsmimport
 
 UFSM_TESTS_VERBOSE ?= false
 
-LDFLAGS = -lgcov
+ifdef GCOV
+	LDFLAGS = -lgcov
+endif
+
 CFLAGS  = -O2 -Wall -std=c99 -fprofile-arcs -ftest-coverage
 CFLAGS += -I.. -I. -I gen/ -DUFSM_TESTS_VERBOSE=$(UFSM_TESTS_VERBOSE)
 
