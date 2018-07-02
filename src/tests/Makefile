@@ -1,6 +1,7 @@
 TESTS  = test_simple
 TESTS += test_simple_substate
 TESTS += test_guards_actions
+TESTS += test_guard_repeat
 TESTS += test_compound_transition
 TESTS += test_xmi_machine
 TESTS += test_deephistory
@@ -89,6 +90,10 @@ test_simple_substate: $(OBJS) test_simple_substate.o
 	@$(CC) $@.c $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
 
 test_guards_actions: $(OBJS) test_guards_actions.o
+	@echo LINK $@
+	@$(CC) $@.c $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
+
+test_guard_repeat: $(OBJS) test_guard_repeat.o
 	@echo LINK $@
 	@$(CC) $@.c $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
 
