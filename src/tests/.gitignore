@@ -16,3 +16,4 @@ test_stack
 test_terminate
 test_transition_prio
 test_xmi_machine
+test_guard_repeat
