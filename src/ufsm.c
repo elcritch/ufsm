@@ -682,13 +682,13 @@ static ufsm_status_t ufsm_process_junction(struct ufsm_machine* m,
 void ufsm_update_defer_queue(struct ufsm_machine* m)
 {
     ufsm_status_t err = UFSM_OK;
-    event_t ev;
+    struct ufsm_event item;
 
     do
     {
-        err = ufsm_queue_get(&m->defer_queue, &ev);
+        err = ufsm_queue_get_item(&m->defer_queue, &item);
         if (err == UFSM_OK)
-            err = ufsm_queue_put(&m->queue, ev);
+            err = ufsm_queue_put_item(&m->queue, item);
     } while (err == UFSM_OK);
 }
 
