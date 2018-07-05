@@ -132,6 +132,9 @@ int main(void)
     printf("states:\n");
     printf(" - state A: %d\n", &A);
     printf(" - state B: %d\n", &B);
+
+    printf(" - status UFSM_OK: %d\n", UFSM_OK);
+    printf(" - status UFSM_OK: %d\n", UFSM_ERROR);
     printf("\n");
 
     // Init SM
@@ -159,15 +162,24 @@ int main(void)
     ufsm_status_t qerr;
 
     // TODO: ufsm_process_done() function (?)
-    while (true && limit++ < 100 )
+    /* while ((err = ufsm_process_queue(&m)) == UFSM_OK && limit++ < 20) */
+    /* { */
+    /*     printf("2.1 B -> A \n"); */
+    /*     printf(" - state %d\n", m.region->current); */
+    /*     assert(m.region->current == &B); */
+    /* } */
+
+    while (true && limit++ < 20 )
     {
         printf("2.1 B -> A \n");
         qerr = ufsm_queue_get(&m.queue, &ev);
+        printf(" - ev %d\n", ev);
         if (qerr == UFSM_OK)
         {
           assert(m.region->current == &B && err == UFSM_OK);
           err = ufsm_process(&m, ev);
           printf(" - state %d\n", m.region->current);
+          ev = -1;
         }
         else
         {
@@ -175,7 +187,8 @@ int main(void)
         }
     }
 
-    assert(limit < 100);
+    printf("loop done - state %d\n", m.region->current);
+    assert(limit < 20);
     assert(m.region->current == &A && err == UFSM_OK);
 
     /* assert(flag_guard1_called); */
