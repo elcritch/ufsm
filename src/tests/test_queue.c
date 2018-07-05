@@ -29,7 +29,7 @@ void q_unlock(void) { flag_q_unlock = true; }
 int main(void)
 {
     ufsm_status_t err = UFSM_OK;
-    struct ufsm_queue_data_t data[4];
+    struct ufsm_event_item data[4];
     event_t i = 0;
     struct ufsm_machine* m = get_StateMachine1();
 

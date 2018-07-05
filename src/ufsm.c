@@ -943,8 +943,9 @@ bool ufsm_transition(struct ufsm_machine* m,
     return event_consumed;
 }
 
-ufsm_status_t ufsm_process(struct ufsm_machine* m, event_t ev)
+ufsm_status_t ufsm_process_item(struct ufsm_machine* m, struct ufsm_event_item item)
 {
+    event_t ev = item.ev;
     ufsm_status_t err = UFSM_OK;
     uint32_t region_count = 0;
     struct ufsm_region* region = NULL;
@@ -992,6 +993,12 @@ ufsm_status_t ufsm_process(struct ufsm_machine* m, event_t ev)
         err = UFSM_ERROR_EVENT_NOT_PROCESSED;
 
     return err;
+}
+
+ufsm_status_t ufsm_process(struct ufsm_machine* m, event_t ev)
+{
+  struct ufsm_event_item ev_item = {.ev = ev, .data = NULL};
+  return ufsm_process_item(m, ev_item);
 }
 
 ufsm_status_t ufsm_process_queue(struct ufsm_machine* m)

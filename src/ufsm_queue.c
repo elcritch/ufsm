@@ -78,18 +78,18 @@ ufsm_status_t ufsm_queue_get(struct ufsm_queue *q, event_t *ev)
     return _ufsm_queue_get(q, ev, NULL);
 }
 
-ufsm_status_t ufsm_queue_put2(struct ufsm_queue *q, event_t ev, void *data)
+ufsm_status_t ufsm_queue_put_item(struct ufsm_queue *q, event_t ev, void *data)
 {
     return _ufsm_queue_put(q, ev, data);
 }
 
-ufsm_status_t ufsm_queue_get2(struct ufsm_queue *q, event_t *ev, void **data)
+ufsm_status_t ufsm_queue_get_item(struct ufsm_queue *q, event_t *ev, void **data)
 {
     return _ufsm_queue_get(q, ev, data);
 }
 
 ufsm_status_t ufsm_queue_init(struct ufsm_queue *q, uint32_t no_of_elements,
-                                            struct ufsm_queue_data_t *data)
+                                            struct ufsm_event_item *data)
 {
     q->head = 0;
     q->tail = 0;
