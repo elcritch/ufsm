@@ -10,7 +10,7 @@
 
 #include <ufsm.h>
 
-static ufsm_status_t _ufsm_queue_put(struct ufsm_queue *q, event_t ev, void *data)
+static ufsm_status_t _ufsm_queue_put(struct ufsm_queue *q, struct ufsm_event item)
 {
     ufsm_status_t err = UFSM_OK;
 
@@ -18,8 +18,7 @@ static ufsm_status_t _ufsm_queue_put(struct ufsm_queue *q, event_t ev, void *dat
         q->lock();
 
     if (q->s < q->no_of_elements) {
-        q->data[q->head].ev = ev;
-        q->data[q->head].data = data;
+        q->data[q->head] = item;
         q->s++;
         q->head++;
 
@@ -40,7 +39,7 @@ static ufsm_status_t _ufsm_queue_put(struct ufsm_queue *q, event_t ev, void *dat
     return err;
 }
 
-static ufsm_status_t _ufsm_queue_get(struct ufsm_queue *q, event_t *ev, void **data)
+static ufsm_status_t _ufsm_queue_get(struct ufsm_queue *q, struct ufsm_event *item)
 {
     ufsm_status_t err = UFSM_OK;
 
@@ -48,9 +47,7 @@ static ufsm_status_t _ufsm_queue_get(struct ufsm_queue *q, event_t *ev, void **d
         q->lock();
 
     if (q->s) {
-        *ev = q->data[q->tail].ev;
-        if (data != NULL)
-            *data = q->data[q->tail].data;
+        *item = q->data[q->tail];
         q->s--;
         q->tail++;
 
@@ -70,26 +67,30 @@ static ufsm_status_t _ufsm_queue_get(struct ufsm_queue *q, event_t *ev, void **d
 
 ufsm_status_t ufsm_queue_put(struct ufsm_queue *q, event_t ev)
 {
-    return _ufsm_queue_put(q, ev, NULL);
+    struct ufsm_event item = {.ev = ev, .data = NULL};
+    return _ufsm_queue_put(q, item);
 }
 
 ufsm_status_t ufsm_queue_get(struct ufsm_queue *q, event_t *ev)
 {
-    return _ufsm_queue_get(q, ev, NULL);
+    struct ufsm_event item;
+    ufsm_status_t err = _ufsm_queue_get(q, &item);
+    *ev = item.ev;
+    return err;
 }
 
-ufsm_status_t ufsm_queue_put_item(struct ufsm_queue *q, event_t ev, void *data)
+ufsm_status_t ufsm_queue_put_item(struct ufsm_queue *q, struct ufsm_event item)
 {
-    return _ufsm_queue_put(q, ev, data);
+    return _ufsm_queue_put(q, item);
 }
 
-ufsm_status_t ufsm_queue_get_item(struct ufsm_queue *q, event_t *ev, void **data)
+ufsm_status_t ufsm_queue_get_item(struct ufsm_queue *q, struct ufsm_event *item)
 {
-    return _ufsm_queue_get(q, ev, data);
+    return _ufsm_queue_get(q, item);
 }
 
 ufsm_status_t ufsm_queue_init(struct ufsm_queue *q, uint32_t no_of_elements,
-                                            struct ufsm_event_item *data)
+                                            struct ufsm_event *data)
 {
     q->head = 0;
     q->tail = 0;

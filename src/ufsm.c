@@ -44,6 +44,8 @@ const char* ufsm_errors[] = {
     "Machine has terminated",
 };
 
+static const struct ufsm_event empty_event = {.ev = -1, .data = NULL};
+
 inline static bool ufsm_state_is(struct ufsm_state* s, uint32_t kind)
 {
     return s ? (s->kind == kind) : false;
@@ -909,7 +911,7 @@ ufsm_status_t ufsm_find_active_regions(struct ufsm_machine* m, uint32_t* c)
 
 bool ufsm_transition(struct ufsm_machine* m,
                      struct ufsm_region* r,
-                     event_t ev,
+                     struct ufsm_event item,
                      bool* state_transitioned)
 {
     bool event_consumed = false;
@@ -917,18 +919,18 @@ bool ufsm_transition(struct ufsm_machine* m,
 
     for (struct ufsm_transition* t = r->transition; t; t = t->next)
     {
-        if (t->defer && t->trigger == ev && t->source == r->current)
+        if (t->defer && t->trigger == item.ev && t->source == r->current)
         {
-            err = ufsm_queue_put(&m->defer_queue, ev);
+            err = ufsm_queue_put_item(&m->defer_queue, item);
 
             if (err != UFSM_OK)
                 break;
         }
-        else if (t->trigger == ev && t->source == r->current)
+        else if (t->trigger == item.ev && t->source == r->current)
         {
             event_consumed = true;
 
-            uint32_t e = ufsm_make_transition(m, t, r);
+            ufsm_status_t e = ufsm_make_transition(m, t, r);
 
             if (e == UFSM_OK)
             {
@@ -943,9 +945,9 @@ bool ufsm_transition(struct ufsm_machine* m,
     return event_consumed;
 }
 
-ufsm_status_t ufsm_process_item(struct ufsm_machine* m, struct ufsm_event_item item)
+ufsm_status_t ufsm_process_item(struct ufsm_machine* m,
+                                struct ufsm_event item)
 {
-    event_t ev = item.ev;
     ufsm_status_t err = UFSM_OK;
     uint32_t region_count = 0;
     struct ufsm_region* region = NULL;
@@ -955,11 +957,11 @@ ufsm_status_t ufsm_process_item(struct ufsm_machine* m, struct ufsm_event_item i
 
     ufsm_process_completion_events(m);
 
-    if (ev == -1)
+    if (item.ev == -1)
         return UFSM_OK;
 
     if (m->debug_event)
-        m->debug_event(ev);
+        m->debug_event(item.ev);
 
     ufsm_find_active_regions(m, &region_count);
 
@@ -976,12 +978,14 @@ ufsm_status_t ufsm_process_item(struct ufsm_machine* m, struct ufsm_event_item i
             {
                 bool state_transitioned = false;
 
-                if (ufsm_transition(m, r, ev, &state_transitioned))
+                if (ufsm_transition(m, r, item, &state_transitioned))
                     event_consumed = true;
 
                 if (!state_transitioned)
-                    if (ufsm_transition(m, r, -1, &state_transitioned))
-                        event_consumed = true;
+                {
+                    if (ufsm_transition(m, r, empty_event, &state_transitioned))
+                      event_consumed = true;
+                }
 
                 if (!r->next && event_consumed)
                     break;
@@ -997,7 +1001,7 @@ ufsm_status_t ufsm_process_item(struct ufsm_machine* m, struct ufsm_event_item i
 
 ufsm_status_t ufsm_process(struct ufsm_machine* m, event_t ev)
 {
-  struct ufsm_event_item ev_item = {.ev = ev, .data = NULL};
+  struct ufsm_event ev_item = {.ev = ev, .data = NULL};
   return ufsm_process_item(m, ev_item);
 }
 
