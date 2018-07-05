@@ -930,9 +930,9 @@ bool ufsm_transition(struct ufsm_machine* m,
         {
             event_consumed = true;
 
-            ufsm_status_t e = ufsm_make_transition(m, t, r);
+            ufsm_status_t err = ufsm_make_transition(m, t, r);
 
-            if (e == UFSM_OK)
+            if (err == UFSM_OK)
             {
                 *state_transitioned = true;
 
@@ -1007,13 +1007,13 @@ ufsm_status_t ufsm_process(struct ufsm_machine* m, event_t ev)
 
 ufsm_status_t ufsm_process_queue(struct ufsm_machine* m)
 {
-    event_t ev = -1;
-    ufsm_status_t err = ufsm_queue_get(&m->queue, &ev);
+    struct ufsm_event item;
+    ufsm_status_t err = ufsm_queue_get_item(&m->queue, &item);
 
     if (err != UFSM_OK)
       return err;
 
-    return ufsm_process(m, ev);
+    return ufsm_process_item(m, item);
 }
 
 static ufsm_status_t ufsm_reset_region(struct ufsm_machine* m,
