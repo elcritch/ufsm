@@ -122,16 +122,20 @@ static struct ufsm_region region1 = {.state = &simple_INIT,
                                      .transition = &simple_transition_INIT,
                                      .next = NULL};
 
+void print_state(void *ptr)
+{
+  if (ptr == &A)
+    printf(" - state A\n");
+  else if (ptr == &B)
+    printf(" - state B\n");
+}
+
 int main(void)
 {
     ufsm_status_t err;
 
     reset_test_flags();
     test_init(&m);
-
-    printf("states:\n");
-    printf(" - state A: %d\n", &A);
-    printf(" - state B: %d\n", &B);
 
     printf(" - status UFSM_OK: %d\n", UFSM_OK);
     printf(" - status UFSM_OK: %d\n", UFSM_ERROR);
@@ -158,38 +162,16 @@ int main(void)
     assert(m.region->current == &B && err == UFSM_OK);
 
     int limit = 0;
-    event_t ev = -1;
-    ufsm_status_t qerr;
 
     // TODO: ufsm_process_done() function (?)
-    /* while ((err = ufsm_process_queue(&m)) == UFSM_OK && limit++ < 20) */
-    /* { */
-    /*     printf("2.1 B -> A \n"); */
-    /*     printf(" - state %d\n", m.region->current); */
-    /*     assert(m.region->current == &B); */
-    /* } */
-
-    while (true && limit++ < 20 )
+    while ((err = ufsm_process_queue(&m)) == UFSM_OK && limit++ < 20)
     {
         printf("2.1 B -> A \n");
-        qerr = ufsm_queue_get(&m.queue, &ev);
-        printf(" - ev %d\n", ev);
-        if (qerr == UFSM_OK)
-        {
-          assert(m.region->current == &B && err == UFSM_OK);
-          err = ufsm_process(&m, ev);
-          printf(" - state %d\n", m.region->current);
-          ev = -1;
-        }
-        else
-        {
-          break;
-        }
+        print_state(m.region->current);
     }
 
-    printf("loop done - state %d\n", m.region->current);
     assert(limit < 20);
-    assert(m.region->current == &A && err == UFSM_OK);
+    assert(m.region->current == &A);
 
     /* assert(flag_guard1_called); */
     /* assert(flag_action1_called); */
