@@ -59,6 +59,20 @@ extern const char* ufsm_errors[];
 #define NULL ((void*)0)
 #endif
 
+#ifdef UFSM_DEBUG
+#define DEBUG(SM, DEBUG, VAR) \
+  if (SM->debug.DEBUG) {SM->debug.DEBUG(VAR);}
+
+#define DEBUG2(SM, DEBUG, VAR1, VAR2) \
+  if (SM->debug.DEBUG) {SM->debug.DEBUG(VAR1, VAR2);}
+
+#else
+
+#define DEBUG(SM, DEBUG, VAR) {}
+#define DEBUG2(SM, DEBUG, VAR1, VAR2) {}
+
+#endif
+
 struct ufsm_event;
 struct ufsm_state;
 struct ufsm_machine;
@@ -140,19 +154,28 @@ struct ufsm_queue {
     ufsm_queue_cb_t unlock;
 };
 
+struct ufsm_machine_debug
+{
+  ufsm_debug_event_t event;
+  ufsm_debug_transition_t transition;
+  ufsm_debug_enter_region_t enter_region;
+  ufsm_debug_leave_region_t leave_region;
+  ufsm_debug_guard_t guard;
+  ufsm_debug_action_t action;
+  ufsm_debug_enter_state_t enter_state;
+  ufsm_debug_exit_state_t exit_state;
+  ufsm_debug_reset_t reset;
+};
+
 struct ufsm_machine
 {
     const char* id;
     const char* name;
-    ufsm_debug_event_t debug_event;
-    ufsm_debug_transition_t debug_transition;
-    ufsm_debug_enter_region_t debug_enter_region;
-    ufsm_debug_leave_region_t debug_leave_region;
-    ufsm_debug_guard_t debug_guard;
-    ufsm_debug_action_t debug_action;
-    ufsm_debug_enter_state_t debug_enter_state;
-    ufsm_debug_exit_state_t debug_exit_state;
-    ufsm_debug_reset_t debug_reset;
+
+#ifdef UFSM_DEBUG
+    struct ufsm_machine_debug debug;
+#endif
+
     bool terminated;
 
     void *stack_data[UFSM_STACK_SIZE];

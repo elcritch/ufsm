@@ -29,9 +29,9 @@ LDFLAGS = -lgcov
 endif
 
 
-CFLAGS  = -O2 -Wall -Wextra -pedantic-errors -std=c99 -fprofile-arcs -ftest-coverage -Wno-unused-parameter
+CFLAGS  = -g -O2 -Wall -Wextra -pedantic-errors -std=c99 -fprofile-arcs -ftest-coverage -Wno-unused-parameter
 
-CFLAGS += -I.. -I. -I gen/ -DUFSM_TESTS_VERBOSE=$(UFSM_TESTS_VERBOSE)
+CFLAGS += -I.. -I. -I gen/ -DUFSM_TESTS_VERBOSE=$(UFSM_TESTS_VERBOSE) -DUFSM_DEBUG
 
 C_SRCS = ../ufsm.c ../ufsm_stack.c ../ufsm_queue.c common.c
 OBJS = $(C_SRCS:.c=.o)

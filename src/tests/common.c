@@ -107,15 +107,15 @@ void test_process(struct ufsm_machine* m, event_t ev)
 
 void test_init(struct ufsm_machine* m)
 {
-    m->debug_transition = &debug_transition;
-    m->debug_enter_region = &debug_enter_region;
-    m->debug_leave_region = &debug_leave_region;
-    m->debug_event = &debug_event;
-    m->debug_action = &debug_action;
-    m->debug_guard = &debug_guard;
-    m->debug_enter_state = &debug_enter_state;
-    m->debug_exit_state = &debug_exit_state;
-    m->debug_reset = &debug_reset;
+    m->debug.transition = &debug_transition;
+    m->debug.enter_region = &debug_enter_region;
+    m->debug.leave_region = &debug_leave_region;
+    m->debug.event = &debug_event;
+    m->debug.action = &debug_action;
+    m->debug.guard = &debug_guard;
+    m->debug.enter_state = &debug_enter_state;
+    m->debug.exit_state = &debug_exit_state;
+    m->debug.reset = &debug_reset;
 
 #if UFSM_TESTS_VERBOSE == true
     printf(" EV |     OP     | Details\n");

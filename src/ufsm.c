@@ -99,8 +99,9 @@ static ufsm_status_t ufsm_enter_state(struct ufsm_machine* m,
 
     bool state_completed = false;
 
-    if (m->debug_enter_state)
-        m->debug_enter_state(s);
+    DEBUG(m, enter_state, s);
+    /* if (m->debug_enter_state) */
+        /* m->debug_enter_state(s); */
 
     for (struct ufsm_entry_exit* e = s->entry; e; e = e->next)
         e->f();
@@ -139,8 +140,7 @@ static ufsm_status_t ufsm_enter_state(struct ufsm_machine* m,
 inline static void ufsm_leave_state(struct ufsm_machine* m,
                                     struct ufsm_state* s)
 {
-    if (m->debug_exit_state)
-        m->debug_exit_state(s);
+    DEBUG(m, exit_state, s);
 
     for (struct ufsm_doact* d = s->doact; d; d = d->next)
         d->f_stop();
@@ -183,8 +183,7 @@ inline static bool ufsm_test_guards(struct ufsm_machine* m,
     {
         bool guard_result = g->f();
 
-        if (m->debug_guard)
-            m->debug_guard(g, guard_result);
+        DEBUG2(m, guard, g, guard_result);
 
         if (!guard_result)
             result = false;
@@ -198,8 +197,7 @@ inline static void ufsm_execute_actions(struct ufsm_machine* m,
 {
     for (struct ufsm_action* a = t->action; a; a = a->next)
     {
-        if (m->debug_action)
-            m->debug_action(a);
+        DEBUG(m, action, a);
 
         a->f();
     }
@@ -264,8 +262,7 @@ static ufsm_status_t ufsm_enter_parent_states(struct ufsm_machine* m,
         if (err != UFSM_OK)
             break;
 
-        if (m->debug_enter_region)
-            m->debug_enter_region(pr);
+        DEBUG(m, enter_region, pr);
 
         ps = pr->parent_state;
 
@@ -339,8 +336,7 @@ static ufsm_status_t ufsm_leave_parent_states(struct ufsm_machine* m,
         if (ancestor == rl)
             break;
 
-        if (m->debug_leave_region)
-            m->debug_leave_region(rl);
+        DEBUG(m, leave_region, rl);
 
         if (rl->parent_state)
         {
@@ -413,8 +409,7 @@ static ufsm_status_t ufsm_init_region_history(struct ufsm_machine* m,
     {
         regions->current = regions->history;
 
-        if (m->debug_enter_region)
-            m->debug_enter_region(regions);
+        DEBUG(m, enter_region, regions);
 
         ufsm_enter_state(m, regions->current);
         err = UFSM_OK;
@@ -738,8 +733,7 @@ static ufsm_status_t ufsm_make_transition(struct ufsm_machine* m,
             break;
         }
 
-        if (m->debug_transition)
-            m->debug_transition(act_t);
+        DEBUG(m, transition, act_t);
 
         if (t->kind == UFSM_TRANSITION_EXTERNAL)
         {
@@ -960,8 +954,7 @@ ufsm_status_t ufsm_process_item(struct ufsm_machine* m,
     if (item.ev == -1)
         return UFSM_OK;
 
-    if (m->debug_event)
-        m->debug_event(item.ev);
+    DEBUG(m, event, item.ev);
 
     ufsm_find_active_regions(m, &region_count);
 
@@ -1001,8 +994,8 @@ ufsm_status_t ufsm_process_item(struct ufsm_machine* m,
 
 ufsm_status_t ufsm_process(struct ufsm_machine* m, event_t ev)
 {
-  struct ufsm_event ev_item = {.ev = ev, .data = NULL};
-  return ufsm_process_item(m, ev_item);
+  struct ufsm_event item = {.ev = ev, .data = NULL};
+  return ufsm_process_item(m, item);
 }
 
 ufsm_status_t ufsm_process_queue(struct ufsm_machine* m)
@@ -1059,8 +1052,7 @@ static ufsm_status_t ufsm_reset_region(struct ufsm_machine* m,
 
 ufsm_status_t ufsm_reset_machine(struct ufsm_machine* m)
 {
-    if (m->debug_reset)
-        m->debug_reset(m);
+    DEBUG(m, reset, m);
 
     for (struct ufsm_region* r = m->region; r; r = r->next)
         ufsm_reset_region(m, r);
