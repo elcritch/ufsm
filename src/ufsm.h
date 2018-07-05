@@ -245,7 +245,8 @@ struct ufsm_state
 
 ufsm_status_t ufsm_init_machine(struct ufsm_machine *m);
 ufsm_status_t ufsm_reset_machine(struct ufsm_machine *m);
-ufsm_status_t ufsm_process (struct ufsm_machine *m, event_t ev);
+ufsm_status_t ufsm_process(struct ufsm_machine *m, event_t ev);
+ufsm_status_t ufsm_process_queue(struct ufsm_machine* m);
 ufsm_status_t ufsm_stack_init(struct ufsm_stack *stack,
                             uint32_t no_of_elements,
                             void **stack_data);

@@ -166,7 +166,7 @@ int main(void)
         if (qerr == UFSM_OK)
         {
           assert(m.region->current == &B && err == UFSM_OK);
-          err = ufsm_process(&m, EV_A);
+          err = ufsm_process(&m, ev);
           printf(" - state %d\n", m.region->current);
         }
         else

@@ -994,6 +994,19 @@ ufsm_status_t ufsm_process(struct ufsm_machine* m, event_t ev)
     return err;
 }
 
+ufsm_status_t ufsm_process_queue(struct ufsm_machine* m)
+{
+    event_t ev = -1;
+    ufsm_status_t err;
+
+    err = ufsm_queue_get(&m->queue, &ev);
+
+    if (err == UFSM_OK)
+      return err;
+
+    return ufsm_process(m, ev);
+}
+
 static ufsm_status_t ufsm_reset_region(struct ufsm_machine* m,
                                        struct ufsm_region* regions)
 {
