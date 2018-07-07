@@ -5,7 +5,6 @@ LFLAGS = -lm
 
 all: test test_pr bench example example2 example3
 
-
 test: test.c tinyexpr.c
 	$(CC) $(CCFLAGS) -o $@ $^ $(LFLAGS)
 	./$@
