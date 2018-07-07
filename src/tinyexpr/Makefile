@@ -1,9 +1,15 @@
-CCFLAGS = -ansi -Wall -Wshadow -O2
+
+CCFLAGS = -ansi -Wall -Wshadow -O2 -g 
 LFLAGS = -lm
 
 .PHONY = all clean
 
-all: test test_pr bench example example2 example3
+all: lib test test_pr bench example example2 example3
+
+lib: libtinyexpr.a
+
+libtinyexpr.a: tinyexpr.o
+	ar rcs $@ $^
 
 test: test.c tinyexpr.c
 	$(CC) $(CCFLAGS) -o $@ $^ $(LFLAGS)
@@ -29,4 +35,4 @@ example3: example3.o tinyexpr.o
 	$(CC) -c $(CCFLAGS) $< -o $@
 
 clean:
-	rm -f *.o *.exe example example2 example3 bench test_pr test
+	rm -f *.o *.a *.exe example example2 example3 bench test_pr test

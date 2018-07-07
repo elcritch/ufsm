@@ -23,6 +23,8 @@
  */
 
 #include "tinyexpr.h"
+#include "tinystd.h"
+
 #include <stdio.h>
 #include "minctest.h"
 

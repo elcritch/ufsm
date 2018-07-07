@@ -1,4 +1,5 @@
 #include "tinyexpr.h"
+#include "tinystd.h"
 #include <stdio.h>
 
 int main(int argc, char *argv[])
