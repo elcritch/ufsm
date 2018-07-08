@@ -30,8 +30,11 @@
 extern "C" {
 #endif
 
+#ifndef TE_VALUE_TYPE
+#define TE_VALUE_TYPE double
+#endif
 
-typedef double te_value;
+typedef TE_VALUE_TYPE te_value;
 
 typedef struct te_expr {
     int type;

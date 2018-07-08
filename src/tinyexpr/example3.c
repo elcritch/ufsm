@@ -1,4 +1,8 @@
+
+/* #define TE_VALUE_TYPE int */
+
 #include "tinyexpr.h"
+#include "tinystd.h"
 #include <stdio.h>
 
 
@@ -7,7 +11,6 @@ double my_sum(double a, double b) {
     printf("Called C function with %f and %f.\n", a, b);
     return a + b;
 }
-
 
 int main(int argc, char *argv[])
 {
@@ -22,8 +25,8 @@ int main(int argc, char *argv[])
     te_expr *n = te_compile(expression, vars, 1, &err);
 
     if (n) {
-        const double r = te_eval(n);
-        printf("Result:\n\t%f\n", r);
+        const te_value r = te_eval(n);
+        printf("Result:\n\t%d\n", r);
         te_free(n);
     } else {
         /* Show the user where the error is at. */

@@ -33,9 +33,9 @@ extern "C" {
 #define INFINITY (1.0/0.0)
 #endif
 
-static double te_pi(void) {return 3.14159265358979323846;}
-static double te_e(void) {return 2.71828182845904523536;}
-static double te_fac(double a) {/* simplest version of fac */
+static te_value te_pi(void) {return (te_value)3.14159265358979323846;}
+static te_value te_e(void) {return (te_value)2.71828182845904523536;}
+static te_value te_fac(te_value a) {/* simplest version of fac */
     if (a < 0.0)
         return NAN;
     if (a > UINT_MAX)
@@ -47,9 +47,9 @@ static double te_fac(double a) {/* simplest version of fac */
             return INFINITY;
         result *= i;
     }
-    return (double)result;
+    return (te_value)result;
 }
-static double te_ncr(double n, double r) {
+static te_value te_ncr(te_value n, te_value r) {
     if (n < 0.0 || r < 0.0 || n < r) return NAN;
     if (n > UINT_MAX || r > UINT_MAX) return INFINITY;
     unsigned long int un = (unsigned int)(n), ur = (unsigned int)(r), i;
@@ -63,7 +63,7 @@ static double te_ncr(double n, double r) {
     }
     return result;
 }
-static double te_npr(double n, double r) {return te_ncr(n, r) * te_fac(r);}
+static te_value te_npr(te_value n, te_value r) {return te_ncr(n, r) * te_fac(r);}
 
 te_variable functions[] = {
     /* must be in alphabetical order */
