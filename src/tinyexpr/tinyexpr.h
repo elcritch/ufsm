@@ -35,7 +35,7 @@ typedef double te_value;
 
 typedef struct te_expr {
     int type;
-    union {te_value value; const te_value_t *bound; const void *function;};
+    union {te_value value; const te_value *bound; const void *function;};
     void *parameters[1];
 } te_expr;
 
