@@ -6,11 +6,13 @@
 #include <stdio.h>
 
 
+
 /* An example of calling a C function. */
-double my_sum(double a, double b) {
-    printf("Called C function with %f and %f.\n", a, b);
+te_value my_sum(te_value a, te_value b) {
+    printf("Called C function with %d and %d.\n", a, b);
     return a + b;
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -36,3 +38,6 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+/* #define PTRACE_REFERENCE_FUNCTION main */
+
