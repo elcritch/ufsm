@@ -31,11 +31,11 @@ extern "C" {
 #endif
 
 
-typedef double te_value_t;
+typedef double te_value;
 
 typedef struct te_expr {
     int type;
-    union {te_value_t value; const te_value_t *bound; const void *function;};
+    union {te_value value; const te_value_t *bound; const void *function;};
     void *parameters[1];
 } te_expr;
 
@@ -61,19 +61,19 @@ typedef struct te_variable {
 
 
 /* Defines set of builting "std" functions */
-extern const te_variable te_functions[];
+/* extern const te_variable te_functions[]; */
 extern const te_variable *te_find_builtin(const char *name, int len);
 
 /* Parses the input expression, evaluates it, and frees it. */
 /* Returns NaN on error. */
-te_value_t te_interp(const char *expression, int *error);
+te_value te_interp(const char *expression, int *error);
 
 /* Parses the input expression and binds variables. */
 /* Returns NULL on error. */
 te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, int *error);
 
 /* Evaluates the expression. */
-te_value_t te_eval(const te_expr *n);
+te_value te_eval(const te_expr *n);
 
 /* Prints debugging information on the syntax tree. */
 void te_print(const te_expr *n);

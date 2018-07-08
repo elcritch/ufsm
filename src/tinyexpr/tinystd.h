@@ -65,7 +65,7 @@ static double te_ncr(double n, double r) {
 }
 static double te_npr(double n, double r) {return te_ncr(n, r) * te_fac(r);}
 
-const te_variable te_functions[] = {
+te_variable functions[] = {
     /* must be in alphabetical order */
     {"abs", fabs,     TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"acos", acos,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
@@ -97,6 +97,12 @@ const te_variable te_functions[] = {
     {"tanh", tanh,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {0, 0, 0, 0}
 };
+
+te_variable *te_functions = functions;
+
+#else
+
+te_variable *te_functions = NULL;
 
 #endif  /* TE_NO_STD_LIB */
 

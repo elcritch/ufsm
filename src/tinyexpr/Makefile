@@ -1,5 +1,5 @@
 
-CCFLAGS = -ansi -Wall -Wshadow -O2 -g 
+CCFLAGS = --std=c99 -Wall -Wshadow -O2 -g 
 LFLAGS = -lm
 
 .PHONY = all clean
@@ -36,3 +36,4 @@ example3: example3.o tinyexpr.o
 
 clean:
 	rm -f *.o *.a *.exe example example2 example3 bench test_pr test
+	rm -Rf *.dSYM

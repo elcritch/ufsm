@@ -53,9 +53,9 @@ For log = natural log uncomment the next line. */
 #define TE_BUILTINS_MAX_SIZE 128
 #endif
 
-extern const te_variable te_functions[];
+te_variable *te_functions;
 
-typedef te_value_t (*te_fun2)(te_value_t, te_value_t);
+typedef te_value (*te_fun2)(te_value_t, te_value_t);
 
 enum {
     TOK_NULL = TE_CLOSURE7+1, TOK_ERROR, TOK_END, TOK_SEP,
@@ -70,7 +70,7 @@ typedef struct state {
     const char *start;
     const char *next;
     int type;
-    union {te_value_t value; const te_value_t *bound; const void *function;};
+    union {te_value value; const te_value_t *bound; const void *function;};
     void *context;
 
     const te_variable *lookup;
@@ -178,12 +178,12 @@ static const te_variable *find_lookup(const state *s, const char *name, int len)
 }
 
 
-static te_value_t add(te_value_t a, te_value_t b) {return a + b;}
-static te_value_t sub(te_value_t a, te_value_t b) {return a - b;}
-static te_value_t mul(te_value_t a, te_value_t b) {return a * b;}
-static te_value_t divide(te_value_t a, te_value_t b) {return a / b;}
-static te_value_t negate(te_value_t a) {return -a;}
-static te_value_t comma(te_value_t a, te_value_t b) {(void)a; return b;}
+static te_value add(te_value_t a, te_value_t b) {return a + b;}
+static te_value sub(te_value_t a, te_value_t b) {return a - b;}
+static te_value mul(te_value_t a, te_value_t b) {return a * b;}
+static te_value divide(te_value_t a, te_value_t b) {return a / b;}
+static te_value negate(te_value_t a) {return -a;}
+static te_value comma(te_value_t a, te_value_t b) {(void)a; return b;}
 
 
 void next_token(state *s) {
@@ -473,11 +473,11 @@ static te_expr *list(state *s) {
 }
 
 
-#define TE_FUN(...) ((te_value_t(*)(__VA_ARGS__))n->function)
+#define TE_FUN(...) ((te_value(*)(__VA_ARGS__))n->function)
 #define M(e) te_eval(n->parameters[e])
 
 
-te_value_t te_eval(const te_expr *n) {
+te_value te_eval(const te_expr *n) {
     if (!n) return NAN;
 
     switch(TYPE_MASK(n->type)) {
@@ -488,13 +488,13 @@ te_value_t te_eval(const te_expr *n) {
         case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:
             switch(ARITY(n->type)) {
                 case 0: return TE_FUN(void)();
-                case 1: return TE_FUN(te_value_t)(M(0));
-                case 2: return TE_FUN(te_value_t, te_value_t)(M(0), M(1));
-                case 3: return TE_FUN(te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2));
-                case 4: return TE_FUN(te_value_t, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3));
-                case 5: return TE_FUN(te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3), M(4));
-                case 6: return TE_FUN(te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3), M(4), M(5));
-                case 7: return TE_FUN(te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3), M(4), M(5), M(6));
+                case 1: return TE_FUN(te_value)(M(0));
+                case 2: return TE_FUN(te_value, te_value_t)(M(0), M(1));
+                case 3: return TE_FUN(te_value, te_value_t, te_value_t)(M(0), M(1), M(2));
+                case 4: return TE_FUN(te_value, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3));
+                case 5: return TE_FUN(te_value, te_value_t, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3), M(4));
+                case 6: return TE_FUN(te_value, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3), M(4), M(5));
+                case 7: return TE_FUN(te_value, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(M(0), M(1), M(2), M(3), M(4), M(5), M(6));
                 default: return NAN;
             }
 
@@ -502,13 +502,13 @@ te_value_t te_eval(const te_expr *n) {
         case TE_CLOSURE4: case TE_CLOSURE5: case TE_CLOSURE6: case TE_CLOSURE7:
             switch(ARITY(n->type)) {
                 case 0: return TE_FUN(void*)(n->parameters[0]);
-                case 1: return TE_FUN(void*, te_value_t)(n->parameters[1], M(0));
-                case 2: return TE_FUN(void*, te_value_t, te_value_t)(n->parameters[2], M(0), M(1));
-                case 3: return TE_FUN(void*, te_value_t, te_value_t, te_value_t)(n->parameters[3], M(0), M(1), M(2));
-                case 4: return TE_FUN(void*, te_value_t, te_value_t, te_value_t, te_value_t)(n->parameters[4], M(0), M(1), M(2), M(3));
-                case 5: return TE_FUN(void*, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(n->parameters[5], M(0), M(1), M(2), M(3), M(4));
-                case 6: return TE_FUN(void*, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(n->parameters[6], M(0), M(1), M(2), M(3), M(4), M(5));
-                case 7: return TE_FUN(void*, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(n->parameters[7], M(0), M(1), M(2), M(3), M(4), M(5), M(6));
+                case 1: return TE_FUN(void*, te_value)(n->parameters[1], M(0));
+                case 2: return TE_FUN(void*, te_value, te_value_t)(n->parameters[2], M(0), M(1));
+                case 3: return TE_FUN(void*, te_value, te_value_t, te_value_t)(n->parameters[3], M(0), M(1), M(2));
+                case 4: return TE_FUN(void*, te_value, te_value_t, te_value_t, te_value_t)(n->parameters[4], M(0), M(1), M(2), M(3));
+                case 5: return TE_FUN(void*, te_value, te_value_t, te_value_t, te_value_t, te_value_t)(n->parameters[5], M(0), M(1), M(2), M(3), M(4));
+                case 6: return TE_FUN(void*, te_value, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(n->parameters[6], M(0), M(1), M(2), M(3), M(4), M(5));
+                case 7: return TE_FUN(void*, te_value, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t, te_value_t)(n->parameters[7], M(0), M(1), M(2), M(3), M(4), M(5), M(6));
                 default: return NAN;
             }
 
@@ -537,7 +537,7 @@ static void optimize(te_expr *n) {
             }
         }
         if (known) {
-            const te_value_t value = te_eval(n);
+            const te_value value = te_eval(n);
             te_free_parameters(n);
             n->type = TE_CONSTANT;
             n->value = value;
@@ -570,9 +570,9 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
 }
 
 
-te_value_t te_interp(const char *expression, int *error) {
+te_value te_interp(const char *expression, int *error) {
     te_expr *n = te_compile(expression, 0, 0, error);
-    te_value_t ret;
+    te_value ret;
     if (n) {
         ret = te_eval(n);
         te_free(n);
