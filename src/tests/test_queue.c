@@ -17,8 +17,8 @@ static bool flag_on_data = false;
 static bool flag_q_lock = false;
 static bool flag_q_unlock = false;
 
-void xA(void) {}
-void eA(void) {}
+void xA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) {}
+void eA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) {}
 
 void on_data(void) { flag_on_data = true; }
 

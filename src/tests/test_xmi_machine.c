@@ -21,21 +21,21 @@ static void reset_flags(void)
     flag_final = false;
 }
 
-bool Guard(void) { return true; }
+bool Guard(ufsm_sm_t *sm, ufsm_guard_t *a) { return true; }
 
-void DoAction(void) {}
+void DoAction(ufsm_sm_t *sm, ufsm_action_t *a) {}
 
-void eD(void) { flag_eD = true; }
+void eD(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eD = true; }
 
-void eC(void) { flag_eC = true; }
+void eC(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eC = true; }
 
-void t1(void) { flag_t1 = true; }
+void t1(ufsm_sm_t *sm, ufsm_action_t *a) { flag_t1 = true; }
 
-void t2(void) { flag_t2 = true; }
+void t2(ufsm_sm_t *sm, ufsm_action_t *a) { flag_t2 = true; }
 
-void t3(void) { flag_t3 = true; }
+void t3(ufsm_sm_t *sm, ufsm_action_t *a) { flag_t3 = true; }
 
-void final(void) { flag_final = true; }
+void final(ufsm_sm_t *sm, ufsm_action_t *a) { flag_final = true; }
 
 int main(void)
 {

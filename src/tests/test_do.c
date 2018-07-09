@@ -8,9 +8,9 @@ static bool flag_final = false;
 static bool call_cb = true;
 static bool flag_dA_stop = false;
 
-void xA(void) { assert(flag_dA_stop); }
+void xA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { assert(flag_dA_stop); }
 
-void eA(void) { assert(!flag_dA_stop); }
+void eA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { assert(!flag_dA_stop); }
 
 void dA_start(struct ufsm_machine* m, struct ufsm_state* s, ufsm_doact_cb_t cb)
 {
@@ -18,9 +18,9 @@ void dA_start(struct ufsm_machine* m, struct ufsm_state* s, ufsm_doact_cb_t cb)
         cb(m, s);
 }
 
-void dA_stop(void) { flag_dA_stop = true; }
+void dA_stop(ufsm_sm_t *sm, ufsm_state_t *s, ufsm_doact_t *a) { flag_dA_stop = true; }
 
-void final(void) { flag_final = true; }
+void final(ufsm_sm_t *sm, ufsm_action_t *a) { flag_final = true; }
 
 int main(void)
 {

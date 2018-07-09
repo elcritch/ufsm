@@ -15,25 +15,25 @@ static uint32_t eSAc = 0;
 static uint32_t xBc = 0;
 static uint32_t eBc = 0;
 
-void eA(void) { eAc++; }
+void eA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { eAc++; }
 
-void eC(void) { eCc++; }
+void eC(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { eCc++; }
 
-void t0(void) { t0c++; }
+void t0(ufsm_sm_t *sm, ufsm_action_t *a) { t0c++; }
 
-void t4(void) { t4c++; }
+void t4(ufsm_sm_t *sm, ufsm_action_t *a) { t4c++; }
 
-void t3(void) { t3c++; }
+void t3(ufsm_sm_t *sm, ufsm_action_t *a) { t3c++; }
 
-void t1(void) { t1c++; }
+void t1(ufsm_sm_t *sm, ufsm_action_t *a) { t1c++; }
 
-void xSA(void) { xSAc++; }
+void xSA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { xSAc++; }
 
-void eSA(void) { eSAc++; }
+void eSA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { eSAc++; }
 
-void xB(void) { xBc++; }
+void xB(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { xBc++; }
 
-void eB(void) { eBc++; }
+void eB(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { eBc++; }
 
 int main(void)
 {

@@ -22,19 +22,21 @@ static void reset_test_flags(void)
     guard2_ret_val = true;
 }
 
-static bool guard1_f(void)
+static bool guard1_f(ufsm_sm_t *sm, ufsm_guard_t *g)
 {
     flag_guard1_called = true;
     return true;
 }
 
-static bool guard2_f(void)
+static bool guard2_f(ufsm_sm_t *sm, ufsm_guard_t *g)
 {
     flag_guard2_called = true;
     return guard2_ret_val;
 }
 
-static void action1_f(void) { flag_action1_called = true; }
+static void action1_f(ufsm_sm_t *sm, ufsm_action_t *g) {
+  flag_action1_called = true;
+}
 
 static struct ufsm_state A;
 static struct ufsm_region region1;

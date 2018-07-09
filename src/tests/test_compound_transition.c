@@ -25,51 +25,51 @@ static void reset_flags(void)
     flag_t3 = false;
 }
 
-void t1(void)
+void t1(ufsm_sm_t *sm, ufsm_action_t *a)
 {
     flag_t1 = true;
     assert(flag_xS11 && !flag_eT1 && !flag_eT11 && !flag_eT111 && !flag_xS1 &&
            flag_t1 && !flag_t2 && !flag_t3);
 }
-void t2(void)
+void t2(ufsm_sm_t *sm, ufsm_action_t *a)
 {
     flag_t2 = true;
     assert(flag_xS11 && !flag_eT1 && !flag_eT11 && !flag_eT111 && flag_xS1 &&
            flag_t1 && flag_t2 && !flag_t3);
 }
 
-void t3(void)
+void t3(ufsm_sm_t *sm, ufsm_action_t *a)
 {
     flag_t3 = true;
     assert(flag_xS11 && flag_eT1 && flag_eT11 && !flag_eT111 && flag_xS1 &&
            flag_t1 && flag_t2 && flag_t3);
 }
 
-void eT1(void)
+void eT1(ufsm_sm_t *sm, ufsm_entry_exit_t *e)
 {
     assert(flag_xS1 && flag_xS11);
     flag_eT1 = true;
 }
 
-void eT11(void)
+void eT11(ufsm_sm_t *sm, ufsm_entry_exit_t *a)
 {
     assert(flag_eT1);
     flag_eT11 = true;
 }
 
-void eT111(void)
+void eT111(ufsm_sm_t *sm, ufsm_entry_exit_t *a)
 {
     assert(flag_eT1 && flag_eT11);
     flag_eT111 = true;
 }
 
-void xS1(void)
+void xS1(ufsm_sm_t *sm, ufsm_entry_exit_t *a)
 {
     assert(flag_xS11);
     flag_xS1 = true;
 }
 
-void xS11(void)
+void xS11(ufsm_sm_t *sm, ufsm_entry_exit_t *a)
 {
     assert(!flag_eT1 && !flag_eT11 && !flag_eT111);
     assert(!flag_xS1 && !flag_xS11);

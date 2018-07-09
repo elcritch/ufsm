@@ -6,7 +6,7 @@
 
 static bool flag_final = false;
 
-void final(void) { flag_final = true; }
+void final(ufsm_sm_t *sm, ufsm_action_t *a) { flag_final = true; }
 
 int main(void)
 {

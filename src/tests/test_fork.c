@@ -36,26 +36,28 @@ void reset_flags(void)
     flag_xAB = false;
 }
 
-bool gA(void)
+bool gA(ufsm_sm_t *sm, ufsm_guard_t *a)
 {
     flag_gA = true;
     return gA_val;
 }
-bool g2(void)
+
+bool g2(ufsm_sm_t *sm, ufsm_guard_t *a)
 {
     flag_g2 = true;
     return g2_val;
 }
-void finalD(void) { flag_finalD = true; }
-void eD(void) { flag_eD = true; }
-void eC(void) { flag_eC = true; }
-void finalC(void) { flag_finalC = true; }
-void eB2(void) { flag_eB2 = true; }
-void xB2(void) { flag_xB2 = true; }
-void eA2(void) { flag_eA2 = true; }
-void xA2(void) { flag_xA2 = true; }
-void eAB(void) { flag_eAB = true; }
-void xAB(void)
+
+void finalD(ufsm_sm_t *sm, ufsm_action_t *a) { flag_finalD = true; }
+void eD(ufsm_sm_t *sm, ufsm_action_t *a) { flag_eD = true; }
+void eC(ufsm_sm_t *sm, ufsm_action_t *a) { flag_eC = true; }
+void finalC(ufsm_sm_t *sm, ufsm_action_t *a) { flag_finalC = true; }
+void eB2(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eB2 = true; }
+void xB2(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_xB2 = true; }
+void eA2(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eA2 = true; }
+void xA2(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_xA2 = true; }
+void eAB(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eAB = true; }
+void xAB(ufsm_sm_t *sm, ufsm_entry_exit_t *a)
 {
     ab_exit_cnt++;
     flag_xAB = true;

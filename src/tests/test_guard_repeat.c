@@ -29,14 +29,14 @@ static void reset_test_flags(void)
     guard1_ret_val = true;
 }
 
-static bool guard1_f(void)
+static bool guard1_f(ufsm_sm_t *sm, ufsm_guard_t *g)
 {
     printf("guard1\n");
     flag_guard1_called = true;
     return data_count > 0;
 }
 
-static void action1_f(void)
+static void action1_f(ufsm_sm_t *sm, ufsm_action_t *g)
 {
   printf("action1\n");
   flag_action1_called = true;
@@ -158,7 +158,7 @@ int main(void)
     reset_test_flags();
     printf("2. B -> A \n");
     err = ufsm_process(&m, EV_A);
-    printf(" - state %d\n", m.region->current);
+    printf(" - state %p\n", m.region->current);
     assert(m.region->current == &B && err == UFSM_OK);
 
     int limit = 0;

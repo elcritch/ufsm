@@ -169,7 +169,7 @@ static void ufsm_gen_states(struct ufsm_state* state)
 
         fprintf(fp_c, "};\n");
 
-        fprintf(fp_h, "void %s(void);\n", e->name);
+        fprintf(fp_h, "void %s(ufsm_sm_t *sm, ufsm_entry_exit_t *e);\n", e->name);
     }
 
     for (struct ufsm_doact* d = state->doact; d; d = d->next)
@@ -199,7 +199,7 @@ static void ufsm_gen_states(struct ufsm_state* state)
                 "void %s_start(struct ufsm_machine *m, struct ufsm_state *s, "
                 "ufsm_doact_cb_t cb);\n",
                 d->name);
-        fprintf(fp_h, "void %s_stop(void);\n", d->name);
+        fprintf(fp_h, "void %s_stop(ufsm_sm_t *sm, ufsm_state_t *s, ufsm_doact_t *e);\n", d->name);
     }
 
     for (struct ufsm_entry_exit* e = state->exit; e; e = e->next)
@@ -225,7 +225,7 @@ static void ufsm_gen_states(struct ufsm_state* state)
             fprintf(fp_c, "  .next = NULL,\n");
 
         fprintf(fp_c, "};\n");
-        fprintf(fp_h, "void %s(void);\n", e->name);
+        fprintf(fp_h, "void %s(ufsm_sm_t *sm, ufsm_entry_exit_t *e);\n", e->name);
     }
 }
 
@@ -314,7 +314,7 @@ static void ufsm_gen_regions(struct ufsm_region* region)
                             "  .action = &%s,\n",
                             id_to_decl(t->action->id));
                     fprintf(fp_c, "  .defer = false,\n");
-                    fprintf(fp_h, "void %s(void);\n", t->action->name);
+                    fprintf(fp_h, "void %s(ufsm_sm_t *sm, ufsm_action_t *a);\n", t->action->name);
                 }
             }
             else
@@ -325,7 +325,7 @@ static void ufsm_gen_regions(struct ufsm_region* region)
             if (t->guard)
             {
                 fprintf(fp_c, "  .guard = &%s,\n", id_to_decl(t->guard->id));
-                fprintf(fp_h, "bool %s(void);\n", t->guard->name);
+                fprintf(fp_h, "bool %s(ufsm_sm_t *sm, ufsm_guard_t *g);\n", t->guard->name);
             }
             else
             {

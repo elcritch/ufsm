@@ -9,13 +9,13 @@ static bool flag_t1 = false;
 static bool flag_t2 = false;
 static bool g_val = true;
 
-void e2(void) { flag_e2 = true; }
+void e2(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_e2 = true; }
 
-bool g(void) { return g_val; }
+bool g(ufsm_sm_t *sm, ufsm_guard_t *a) { return g_val; }
 
-void t1(void) { flag_t1 = true; }
+void t1(ufsm_sm_t *sm, ufsm_action_t *a) { flag_t1 = true; }
 
-void t2(void) { flag_t2 = true; }
+void t2(ufsm_sm_t *sm, ufsm_action_t *a) { flag_t2 = true; }
 
 int main(void)
 {

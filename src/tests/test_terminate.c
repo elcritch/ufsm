@@ -7,9 +7,9 @@
 static bool flag_xA = false;
 static bool flag_eA = false;
 
-void xA(void) { flag_xA = true; }
+void xA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_xA = true; }
 
-void eA(void) { flag_eA = true; }
+void eA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eA = true; }
 
 int main(void)
 {

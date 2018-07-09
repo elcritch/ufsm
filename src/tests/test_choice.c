@@ -19,17 +19,17 @@ static void reset_flags(void)
     flag_e3 = false;
 }
 
-bool g1(void) { return g1_val; }
+bool g1(ufsm_sm_t *sm, ufsm_guard_t *a) { return g1_val; }
 
-bool g2(void) { return g2_val; }
+bool g2(ufsm_sm_t *sm, ufsm_guard_t *a) { return g2_val; }
 
-bool g3(void) { return g3_val; }
+bool g3(ufsm_sm_t *sm, ufsm_guard_t *a) { return g3_val; }
 
-void e1(void) { flag_e1 = true; }
+void e1(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_e1 = true; }
 
-void e2(void) { flag_e2 = true; }
+void e2(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_e2 = true; }
 
-void e3(void) { flag_e3 = true; }
+void e3(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_e3 = true; }
 
 int main(void)
 {

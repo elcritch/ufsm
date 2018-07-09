@@ -13,9 +13,9 @@ static void reset_flags(void)
     flag_eE = false;
 }
 
-void eD(void) { flag_eD = true; }
+void eD(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eD = true; }
 
-void eE(void) { flag_eE = true; }
+void eE(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eE = true; }
 
 int main(void)
 {

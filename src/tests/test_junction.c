@@ -19,15 +19,15 @@ static void reset_flags(void)
     flag_t1 = false;
 }
 
-void eA(void) { flag_eA = true; }
+void eA(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eA = true; }
 
-void eB(void) { flag_eB = true; }
+void eB(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eB = true; }
 
-void eC(void) { flag_eC = true; }
+void eC(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eC = true; }
 
-void eD(void) { flag_eD = true; }
+void eD(ufsm_sm_t *sm, ufsm_entry_exit_t *a) { flag_eD = true; }
 
-void t1(void) { flag_t1 = true; }
+void t1(ufsm_sm_t *sm, ufsm_action_t *a) { flag_t1 = true; }
 
 int main(void)
 {
