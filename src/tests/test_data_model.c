@@ -155,7 +155,6 @@ int main(void)
 
     // Init SM
     err = ufsm_init_machine(&m);
-    m.expr = true;
     assert(err == UFSM_OK && "Initializing statemachine");
 
     x = 2; y = 4;

@@ -17,6 +17,7 @@ test_terminate
 test_transition_prio
 test_xmi_machine
 test_guard_repeat
+test_data_model
 
 *.dSYM
 

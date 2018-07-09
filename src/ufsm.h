@@ -81,15 +81,32 @@ struct ufsm_action;
 struct ufsm_guard;
 struct ufsm_transition;
 struct ufsm_region;
+struct ufsm_entry_exit;
+struct ufsm_doact;
 
-typedef bool (*ufsm_guard_func_t)(void);
-typedef void (*ufsm_action_func_t)(void);
-typedef void (*ufsm_entry_exit_func_t)(void);
+typedef struct ufsm_machine ufsm_sm_t;
+typedef struct ufsm_state ufsm_state_t;
+typedef struct ufsm_guard ufsm_guard_t;
+typedef struct ufsm_action ufsm_action_t;
+typedef struct ufsm_transition ufsm_trans_t;
+typedef struct ufsm_region ufsm_region_t;
+typedef struct ufsm_entry_exit ufsm_entry_exit_t;
+typedef struct ufsm_doact ufsm_doact_t;
+
+typedef bool (*ufsm_guard_func_t)(ufsm_sm_t *m, ufsm_guard_t *g);
+typedef void (*ufsm_action_func_t)(ufsm_sm_t *m, ufsm_action_t *g);
+typedef void (*ufsm_entry_exit_func_t)(ufsm_sm_t *m, ufsm_entry_exit_t *e);
+
 typedef void (*ufsm_queue_cb_t)(void);
-typedef uint32_t (*ufsm_doact_cb_t)(struct ufsm_machine* m,
-                                    struct ufsm_state* s);
-typedef void (*ufsm_doact_func_t)(struct ufsm_machine* m,
-                                  struct ufsm_state* s,
+typedef uint32_t (*ufsm_doact_cb_t)(ufsm_sm_t* m,
+                                    ufsm_state_t* s);
+
+typedef void (*ufsm_dostop_func_t)(ufsm_sm_t* m,
+                                   ufsm_state_t* s,
+                                   ufsm_doact_t* t);
+
+typedef void (*ufsm_doact_func_t)(ufsm_sm_t* m,
+                                  ufsm_state_t* s,
                                   ufsm_doact_cb_t cb);
 
 /* Debug callbacks */
@@ -178,7 +195,6 @@ struct ufsm_machine
 #endif
 
     bool terminated;
-    bool expr;
 
     void *data_model;
     void *stack_data[UFSM_STACK_SIZE];
@@ -229,7 +245,7 @@ struct ufsm_doact
     const char* id;
     const char* name;
     ufsm_doact_func_t f_start;
-    ufsm_entry_exit_func_t f_stop;
+    ufsm_dostop_func_t f_stop;
     struct ufsm_doact* next;
 };
 
