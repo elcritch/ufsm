@@ -60,6 +60,10 @@ extern const char* ufsm_errors[];
 #define NULL ((void*)0)
 #endif
 
+#ifndef UFSM_META_TYPE
+#define UFSM_META_TYPE void
+#endif
+
 #ifdef UFSM_DEBUG
 #define DEBUG(SM, DEBUG, VAR) \
   if (SM->debug.DEBUG) {SM->debug.DEBUG(VAR);}
@@ -73,6 +77,8 @@ extern const char* ufsm_errors[];
 #define DEBUG2(SM, DEBUG, VAR1, VAR2) {}
 
 #endif
+
+typedef UFSM_META_TYPE ufsm_meta_t;
 
 struct ufsm_event;
 struct ufsm_state;
@@ -217,6 +223,7 @@ struct ufsm_action
 {
     const char* id;
     const char* name;
+    const ufsm_meta_t *meta;
     ufsm_action_func_t f;
     struct ufsm_action* next;
 };
@@ -225,10 +232,9 @@ struct ufsm_guard
 {
     const char* id;
     const char* name;
-    union {
-      ufsm_guard_func_t f;
-      const te_expr *e;
-    };
+    const ufsm_meta_t *meta;
+    ufsm_guard_func_t f;
+    const te_expr *e;
     struct ufsm_guard* next;
 };
 
@@ -236,6 +242,7 @@ struct ufsm_entry_exit
 {
     const char* id;
     const char* name;
+    const ufsm_meta_t *meta;
     ufsm_entry_exit_func_t f;
     struct ufsm_entry_exit* next;
 };
@@ -244,6 +251,7 @@ struct ufsm_doact
 {
     const char* id;
     const char* name;
+    const ufsm_meta_t *meta;
     ufsm_doact_func_t f_start;
     ufsm_dostop_func_t f_stop;
     struct ufsm_doact* next;
@@ -253,6 +261,7 @@ struct ufsm_transition
 {
     const char* id;
     const char* name;
+    const ufsm_meta_t *meta;
     const char* trigger_name;
     int32_t trigger;
     bool defer;
@@ -268,6 +277,7 @@ struct ufsm_region
 {
     const char* id;
     const char* name;
+    const ufsm_meta_t *meta;
     bool has_history;
     struct ufsm_state* current;
     struct ufsm_state* history;
@@ -281,6 +291,7 @@ struct ufsm_state
 {
     const char* id;
     const char* name;
+    const ufsm_meta_t *meta;
     enum ufsm_state_kind kind;
     struct ufsm_entry_exit* entry;
     struct ufsm_doact* doact;
