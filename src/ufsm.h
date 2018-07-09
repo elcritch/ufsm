@@ -12,6 +12,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "tinyexpr.h"
 
 /* Error codes */
 
@@ -177,7 +178,9 @@ struct ufsm_machine
 #endif
 
     bool terminated;
+    bool expr;
 
+    void *data_model;
     void *stack_data[UFSM_STACK_SIZE];
     void *completion_stack_data[UFSM_COMPLETION_STACK_SIZE];
     struct ufsm_event queue_data[UFSM_QUEUE_SIZE];
@@ -206,7 +209,10 @@ struct ufsm_guard
 {
     const char* id;
     const char* name;
-    ufsm_guard_func_t f;
+    union {
+      ufsm_guard_func_t f;
+      const te_expr *e;
+    };
     struct ufsm_guard* next;
 };
 

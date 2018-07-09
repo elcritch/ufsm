@@ -2,6 +2,7 @@ TESTS  = test_simple
 TESTS += test_simple_substate
 TESTS += test_guards_actions
 TESTS += test_guard_repeat
+TESTS += test_data_model
 TESTS += test_compound_transition
 TESTS += test_xmi_machine
 TESTS += test_deephistory
@@ -29,9 +30,9 @@ LDFLAGS = -lgcov
 endif
 
 
-CFLAGS  = -g -O2 -Wall -Wextra -pedantic-errors -std=c99 -fprofile-arcs -ftest-coverage -Wno-unused-parameter
+CFLAGS  = -g -O2 -Wall -Wextra -std=c99 -fprofile-arcs -ftest-coverage -Wno-unused-parameter
 
-CFLAGS += -I.. -I. -I gen/ -DUFSM_TESTS_VERBOSE=$(UFSM_TESTS_VERBOSE) -DUFSM_DEBUG
+CFLAGS += -I.. -I. -I gen/ -I../tinyexpr/ -DUFSM_TESTS_VERBOSE=$(UFSM_TESTS_VERBOSE) -DUFSM_DEBUG -DTE_VALUE_TYPE=int
 
 C_SRCS = ../ufsm.c ../ufsm_stack.c ../ufsm_queue.c common.c
 OBJS = $(C_SRCS:.c=.o)
@@ -89,9 +90,13 @@ test_simple_substate: $(OBJS) test_simple_substate.o
 	@echo LINK $@
 	@$(CC) $@.c $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
 
+test_data_model: $(OBJS) test_data_model.o  ../tinyexpr/tinyexpr.o
+	@echo LINK $@
+	$(CC) $@.c ../tinyexpr/tinyexpr.o $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
+
 test_guards_actions: $(OBJS) test_guards_actions.o
 	@echo LINK $@
-	@$(CC) $@.c $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
+	$(CC) $@.c $(OBJS) $(CFLAGS) $(LDFLAGS) -o $@
 
 test_guard_repeat: $(OBJS) test_guard_repeat.o
 	@echo LINK $@

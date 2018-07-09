@@ -26,6 +26,10 @@ int main(int argc, char *argv[])
     int err;
     te_expr *n = te_compile(expression, vars, 1, &err);
 
+    printf("\n");
+    te_print(n);
+    printf("\n");
+
     if (n) {
         const te_value r = te_eval(n);
         printf("Result:\n\t%d\n", r);
