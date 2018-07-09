@@ -59,11 +59,9 @@ typedef te_value (*te_fun2)(te_value, te_value);
 
 enum {
     TOK_NULL = TE_CLOSURE7+1, TOK_ERROR, TOK_END, TOK_SEP,
-    TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
+    TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX,
+    TOK_ASSIGN,
 };
-
-
-enum {TE_CONSTANT = 1};
 
 
 typedef struct state {
@@ -123,7 +121,7 @@ void te_free(te_expr *n) {
 
 static int te_functions_table_size = -1;
 
-static const int find_builtin_size() {
+static int find_builtin_size() {
   int i = 0;
   int countmax = TE_BUILTINS_MAX_SIZE;
 
@@ -177,6 +175,12 @@ static const te_variable *find_lookup(const state *s, const char *name, int len)
     return 0;
 }
 
+
+static te_value gt(te_value a, te_value b) {return (te_value) a > b;}
+static te_value lt(te_value a, te_value b) {return (te_value) a < b;}
+static te_value ge(te_value a, te_value b) {return (te_value) a >= b;}
+static te_value le(te_value a, te_value b) {return (te_value) a <= b;}
+static te_value eq(te_value a, te_value b) {return (te_value) a == b;}
 
 static te_value add(te_value a, te_value b) {return a + b;}
 static te_value sub(te_value a, te_value b) {return a - b;}
@@ -245,6 +249,30 @@ void next_token(state *s) {
                     case ')': s->type = TOK_CLOSE; break;
                     case ',': s->type = TOK_SEP; break;
                     case ' ': case '\t': case '\n': case '\r': break;
+                    case '>':
+                      if (s->next[0] == '=') {
+                        s->type = TOK_INFIX; s->function = ge;
+                        s->next++;
+                      } else {
+                        s->type = TOK_INFIX; s->function = gt;
+                      }
+                      break;
+                    case '<':
+                      if (s->next[0] == '=') {
+                        s->type = TOK_INFIX; s->function = le;
+                        s->next++;
+                      } else {
+                        s->type = TOK_INFIX; s->function = lt;
+                      }
+                      break;
+                    case '=':
+                      if (s->next[0] == '=') {
+                        s->type = TOK_INFIX; s->function = eq;
+                        s->next++;
+                      } else {
+                        s->type = TOK_ASSIGN; /* s->function = assign; */
+                      }
+                      break;
                     default: s->type = TOK_ERROR; break;
                 }
             }
@@ -458,10 +486,78 @@ static te_expr *expr(state *s) {
     return ret;
 }
 
+static te_expr *logic(state *s) {
+  /* <logic>     =    <expr> {(">" | "<" | ">=" | "<=" | "==") <expr>} */
+  te_expr *ret = expr(s);
+
+  while (s->type == TOK_INFIX
+         && (s->function == gt
+             || s->function == lt
+             || s->function == ge
+             || s->function == le
+             || s->function == eq
+             )) {
+    te_fun2 t = s->function;
+    next_token(s);
+    ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, expr(s));
+    ret->function = t;
+  }
+
+  return ret;
+}
+
+static te_expr *statement(state *s) {
+  /* <statement> =    <logic> {("=") <variable>} */
+  te_expr *ret = logic(s);
+  printf("STATEMENT: \n");
+  te_print(ret);
+
+  if (ret->type == TE_VARIABLE && s->type == TOK_ASSIGN) {
+    printf("STATEMENT: TOK_VAR\n");
+    next_token(s);
+    ret = NEW_EXPR(TE_ASSIGN, ret, logic(s));
+  } else if (s->type == TOK_ASSIGN) {
+    printf("STATEMENT: TOK_VAR error: %d\n", ret->type);
+    ret = new_expr(0, 0);
+    s->type = TOK_ERROR;
+    ret->value = NAN;
+  }
+
+  return ret;
+}
+
+/* static te_expr *statement(state *s) { */
+/*   /\* <power>     =    {<variable> ("=")} <logic> *\/ */
+/*   /\* int sign = 1; *\/ */
+/*   te_expr *ret; */
+
+/*   if (TYPE_MASK(s->type) == TOK_VARIABLE) { */
+
+/*     ret = new_expr(TE_ASSIGN, 0); */
+/*     ret->bound = s->bound; */
+/*     next_token(s); */
+
+/*     // TODO: fix... */
+/*     if (s->type == TOK_ASSIGN) { */
+/*       next_token(s); */
+/*       ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, logic(s)); */
+/*     } else { */
+/*       ret = new_expr(0, 0); */
+/*       s->type = TOK_ERROR; */
+/*       ret->value = NAN; */
+/*     } */
+/*   } */
+/*   else { */
+/*     ret = logic(s); */
+/*   } */
+
+/*   return ret; */
+/* } */
+
 
 static te_expr *list(state *s) {
-    /* <list>      =    <expr> {"," <expr>} */
-    te_expr *ret = expr(s);
+    /* <list>      =    <statement> {"," <statement>} */
+    te_expr *ret = statement(s);
 
     while (s->type == TOK_SEP) {
         next_token(s);
@@ -483,6 +579,7 @@ te_value te_eval(const te_expr *n) {
     switch(TYPE_MASK(n->type)) {
         case TE_CONSTANT: return n->value;
         case TE_VARIABLE: return *n->bound;
+        case TE_ASSIGN: return *n->bound;
 
         case TE_FUNCTION0: case TE_FUNCTION1: case TE_FUNCTION2: case TE_FUNCTION3:
         case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:
@@ -589,6 +686,7 @@ static void pn(const te_expr *n, int depth) {
     switch(TYPE_MASK(n->type)) {
     case TE_CONSTANT: printf("%f\n", (double)n->value); break;
     case TE_VARIABLE: printf("bound %p\n", n->bound); break;
+    case TE_ASSIGN: printf("assign %p\n", n->bound); break;
 
     case TE_FUNCTION0: case TE_FUNCTION1: case TE_FUNCTION2: case TE_FUNCTION3:
     case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:

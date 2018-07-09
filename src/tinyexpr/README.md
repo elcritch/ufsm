@@ -241,7 +241,9 @@ Here is some example performance numbers taken from the included
 
 TinyExpr parses the following grammar:
 
-    <list>      =    <expr> {"," <expr>}
+    <list>      =    <statement> {"," <statement>}
+    <statement> =    <logic> {("=") <logic>}
+    <logic>     =    <expr> {(">" | "<" | ">=" | "<=" | "==") <expr>}
     <expr>      =    <term> {("+" | "-") <term>}
     <term>      =    <factor> {("*" | "/" | "%") <factor>}
     <factor>    =    <power> {"^" <power>}

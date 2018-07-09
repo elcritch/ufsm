@@ -1,5 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
+
+/* #define UFSM_META_TYPE te_expr */
+
 #include <ufsm.h>
 #include "common.h"
 #include "tinyexpr.h"
@@ -22,7 +25,7 @@ static bool flag_guard1_called = false;
 static bool flag_action1_called = false;
 static bool guard1_ret_val = true;
 
-static int data_count = 5;
+/* static int data_count = 5; */
 
 static void reset_test_flags(void)
 {
@@ -31,18 +34,20 @@ static void reset_test_flags(void)
     guard1_ret_val = true;
 }
 
-static bool guard1_f(ufsm_sm_t *sm, ufsm_guard_t *g)
+static bool guard_func(ufsm_sm_t *sm, ufsm_guard_t *g)
 {
-    printf("guard1\n");
-    flag_guard1_called = true;
-    return data_count > 0;
+    printf("guard function: \n");
+    /* flag_guard1_called = true; */
+    return (bool) te_eval(g->meta);
 }
 
-static void action1_f(ufsm_sm_t *sm, ufsm_action_t *g)
+static void action_func(ufsm_sm_t *sm, ufsm_action_t *a)
 {
-  printf("action1\n");
-  flag_action1_called = true;
-  data_count--;
+  printf("action func: \n");
+  /* flag_action1_called = true; */
+  /* count--; */
+
+  te_eval(a->meta);
 
   struct ufsm_queue* q = ufsm_get_queue(&m);
   ufsm_queue_put(q, EV_A);
@@ -73,12 +78,14 @@ static struct ufsm_state A = {
 };
 
 static struct ufsm_guard guard1 = {
-    .f = &guard1_f,
+    .f = &guard_func,
+    .meta = "count > 0",
     .next = NULL,
 };
 
 static struct ufsm_action action1 = {
-    .f = &action1_f,
+    .f = &action_func,
+    .meta = "count--",
     .next = NULL,
 };
 
@@ -135,14 +142,20 @@ void print_state(void *ptr)
 int main(void)
 {
     // Init Data Model
-    double x, y;
-    te_variable vars[] = {{"x", &x, 0, 0}, {"y", &y, 0, 0}};
+    int count = 5;
 
-    const char *expression = "x + 10*y";
-    m.data_model = vars;
+    int guard1_err = 0;
+    int action1_err = 0;
+    te_variable vars[] = {{"count", &count, 0, 0}, };
 
-    int te_err;
-    te_expr *guard_expr = te_compile(expression, vars, 2, &te_err);
+    printf("guard mesg: %s : %p\n", guard1.meta, guard1.meta);
+    /* guard1.meta = te_compile(guard1.meta, vars, 1, &guard1_err); */
+    guard1.meta = te_compile("count > 0", vars, 1, &guard1_err);
+    printf("guard expr: %p\n", guard1.meta);
+    assert(guard1_err == 0 && "Initializing guard expr");
+    action1.meta = te_compile("count = count - 1", vars, 1, &action1_err);
+    printf("action error: `%s` : %d\n", "count = count - 1", action1_err);
+    assert(action1_err == 0 && "Initializing action expr");
 
     // Init Test
     ufsm_status_t err;
@@ -156,12 +169,6 @@ int main(void)
     // Init SM
     err = ufsm_init_machine(&m);
     assert(err == UFSM_OK && "Initializing statemachine");
-
-    x = 2; y = 4;
-    const te_value r = te_eval(guard_expr);
-
-    /* err = ufsm_init_data(&m); */
-    assert(r && err == UFSM_OK && "Initializing data model");
     assert(m.region->current == &A);
 
     /* assert(flag_guard1_called == false); */
