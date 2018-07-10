@@ -509,22 +509,19 @@ static te_expr *logic(state *s) {
 static te_expr *statement(state *s) {
   /* <statement> =    <logic> {("=") <variable>} */
   te_expr *ret = logic(s);
-  printf("STATEMENT: \n");
-  te_print(ret);
 
   if (ret->type == TE_VARIABLE && s->type == TOK_ASSIGN) {
-    printf("STATEMENT: TOK_VAR\n");
+    /* printf("STATEMENT: TOK_VAR\n"); */
     next_token(s);
-    printf("STATEMENT: ret \n");
+    /* printf("STATEMENT: ret \n"); */
 
     const te_value *bound = ret->bound;
-    te_print(ret);
     te_free(ret);
     ret = NEW_EXPR(TE_ASSIGN, logic(s));
     ret->bound = bound;
-    printf("STATEMENT: ret' \n");
-    te_print(ret);
-    printf("STATEMENT: TOK_VAR done\n");
+    /* printf("STATEMENT: ret' \n"); */
+    /* te_print(ret); */
+    /* printf("STATEMENT: TOK_VAR done\n"); */
   } else if (s->type == TOK_ASSIGN) {
     printf("STATEMENT: TOK_VAR error: %d\n", ret->type);
     ret = new_expr(0, 0);
