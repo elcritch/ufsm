@@ -42,9 +42,9 @@ typedef struct te_expr {
     void *parameters[1];
 } te_expr;
 
-
+#define ENUM_MAX 0x7
 enum {
-    TE_VARIABLE = 0, TE_CONSTANT, TE_ASSIGN,
+    TE_VARIABLE = 0, TE_ASSIGN, TE_CONSTANT,
 
     TE_FUNCTION0 = 8, TE_FUNCTION1, TE_FUNCTION2, TE_FUNCTION3,
     TE_FUNCTION4, TE_FUNCTION5, TE_FUNCTION6, TE_FUNCTION7,

@@ -81,7 +81,7 @@ typedef struct state {
 #define IS_PURE(TYPE) (((TYPE) & TE_FLAG_PURE) != 0)
 #define IS_FUNCTION(TYPE) (((TYPE) & TE_FUNCTION0) != 0)
 #define IS_CLOSURE(TYPE) (((TYPE) & TE_CLOSURE0) != 0)
-#define ARITY(TYPE) ( ((TYPE) & (TE_FUNCTION0 | TE_CLOSURE0)) ? ((TYPE) & 0x00000007) : 0 )
+#define ARITY(TYPE) ( ((TYPE) & (TE_FUNCTION0 | TE_CLOSURE0 | TE_ASSIGN)) ? ((TYPE) & ENUM_MAX) : 0 )
 #define NEW_EXPR(type, ...) new_expr((type), (const te_expr*[]){__VA_ARGS__})
 
 static te_expr *new_expr(const int type, const te_expr *parameters[]) {
@@ -108,7 +108,7 @@ void te_free_parameters(te_expr *n) {
         case TE_FUNCTION4: case TE_CLOSURE4: te_free(n->parameters[3]);     /* Falls through. */
         case TE_FUNCTION3: case TE_CLOSURE3: te_free(n->parameters[2]);     /* Falls through. */
         case TE_FUNCTION2: case TE_CLOSURE2: te_free(n->parameters[1]);     /* Falls through. */
-        case TE_FUNCTION1: case TE_CLOSURE1: te_free(n->parameters[0]);
+        case TE_FUNCTION1: case TE_CLOSURE1: case TE_ASSIGN: te_free(n->parameters[0]);
     }
 }
 
@@ -515,7 +515,16 @@ static te_expr *statement(state *s) {
   if (ret->type == TE_VARIABLE && s->type == TOK_ASSIGN) {
     printf("STATEMENT: TOK_VAR\n");
     next_token(s);
-    ret = NEW_EXPR(TE_ASSIGN, ret, logic(s));
+    printf("STATEMENT: ret \n");
+
+    const te_value *bound = ret->bound;
+    te_print(ret);
+    te_free(ret);
+    ret = NEW_EXPR(TE_ASSIGN, logic(s));
+    ret->bound = bound;
+    printf("STATEMENT: ret' \n");
+    te_print(ret);
+    printf("STATEMENT: TOK_VAR done\n");
   } else if (s->type == TOK_ASSIGN) {
     printf("STATEMENT: TOK_VAR error: %d\n", ret->type);
     ret = new_expr(0, 0);
@@ -575,11 +584,15 @@ static te_expr *list(state *s) {
 
 te_value te_eval(const te_expr *n) {
     if (!n) return NAN;
+    te_value *var;
 
     switch(TYPE_MASK(n->type)) {
         case TE_CONSTANT: return n->value;
         case TE_VARIABLE: return *n->bound;
-        case TE_ASSIGN: return *n->bound;
+        case TE_ASSIGN:
+          var = (te_value *) n->bound;
+          *var = M(0);
+          return *var;
 
         case TE_FUNCTION0: case TE_FUNCTION1: case TE_FUNCTION2: case TE_FUNCTION3:
         case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:
@@ -686,7 +699,10 @@ static void pn(const te_expr *n, int depth) {
     switch(TYPE_MASK(n->type)) {
     case TE_CONSTANT: printf("%f\n", (double)n->value); break;
     case TE_VARIABLE: printf("bound %p\n", n->bound); break;
-    case TE_ASSIGN: printf("assign %p\n", n->bound); break;
+    case TE_ASSIGN:
+      printf("assign %p <- parameters(%p)\n", n->bound, n->parameters[0]);
+      /* pn(n->parameters[0], depth + 1); */
+      break;
 
     case TE_FUNCTION0: case TE_FUNCTION1: case TE_FUNCTION2: case TE_FUNCTION3:
     case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:
