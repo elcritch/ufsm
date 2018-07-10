@@ -523,7 +523,7 @@ static te_expr *statement(state *s) {
     /* te_print(ret); */
     /* printf("STATEMENT: TOK_VAR done\n"); */
   } else if (s->type == TOK_ASSIGN) {
-    printf("STATEMENT: TOK_VAR error: %d\n", ret->type);
+    /* printf("STATEMENT: TOK_VAR error: %d\n", ret->type); */
     ret = new_expr(0, 0);
     s->type = TOK_ERROR;
     ret->value = NAN;
