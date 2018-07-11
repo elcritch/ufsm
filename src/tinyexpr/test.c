@@ -300,7 +300,7 @@ void test_variables() {
     lok(expr4);
     lok(!err);
 
-    te_expr *expr10 = te_compile("y = 7*x", lookup, 3, &err);
+    te_expr *expr10 = te_compile("y = 47*x", lookup, 3, &err);
     lok(expr10);
     lok(!err);
 
@@ -321,8 +321,12 @@ void test_variables() {
             ev = te_eval(expr4);
             lfequal(ev, x+5);
 
-            te_eval(expr10);
-            lfequal(y, 7*x);
+            /* printf("\n\nx -> %f, y -> %f\n", x, y); */
+            ev = te_eval(expr10);
+            /* printf("x' -> %f, y' -> %f\n", x, y); */
+
+            lfequal(y, 47*x);
+            lfequal(ev, y);
         }
     }
 
