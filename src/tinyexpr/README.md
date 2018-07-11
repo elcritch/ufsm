@@ -239,15 +239,23 @@ Here is some example performance numbers taken from the included
 
 ## Grammar
 
+
 TinyExpr parses the following grammar:
 
-    <list>      =    <statement> {"," <statement>}
-    <statement> =    <logic> {("=") <logic>}
-    <logic>     =    <expr> {(">" | "<" | ">=" | "<=" | "==") <expr>}
-    <expr>      =    <term> {("+" | "-") <term>}
-    <term>      =    <factor> {("*" | "/" | "%") <factor>}
-    <factor>    =    <power> {"^" <power>}
-    <power>     =    {("-" | "+")} <base>
+    <list>      = <statement> { ","  <statement>}
+    <statement> = <logor>     { "="  <logor>}    /* assignment only valid when lhs is `variable` */
+    <logor'>    = <logand>    { "||" <logand>}
+    <logand'>   = <bitor>     { "&&" <bitor>}
+    <bitor'>    = <bitxor>    { "|"  <bitxor>}
+    <bitxor'>   = <bitand>    { "^"  <bitand>}
+    <bitand'>   = <equality>  { "&"  <equality>}
+    <equality'> = <relop>     { ("==" | "!=")             <relop>}
+    <relop'>    = <shifts>    { (">" | "<" | ">=" | "<=") <shifts>}
+    <shifts'>   = <expr>      { ("<<" | ">>")             <expr>}
+    <expr>      = <term>      { ("+" | "-")               <term>}
+    <term>      = <factor>    { ("*" | "/" | "%")         <factor>}
+    <factor>    = <power>     { "**"                      <power>}
+    <power>     =             { ("-" | "+" | "~" | "!")}  <base>
     <base>      =    <constant>
                    | <variable>
                    | <function-0> {"(" ")"}
