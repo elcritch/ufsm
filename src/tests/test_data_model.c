@@ -14,6 +14,13 @@ enum events
     EV_B
 };
 
+struct data_model
+{
+  int count;
+};
+
+struct data_model *data_model;
+
 static struct ufsm_region region1;
 
 static struct ufsm_machine m = {
@@ -36,8 +43,10 @@ static void reset_test_flags(void)
 
 static bool guard_func(ufsm_sm_t *sm, ufsm_guard_t *g)
 {
-    printf("guard function: \n");
+    printf("guard function: (count = %d)\n", data_model->count);
     /* flag_guard1_called = true; */
+    te_print(g->meta);
+
     return (bool) te_eval(g->meta);
 }
 
@@ -46,6 +55,8 @@ static void action_func(ufsm_sm_t *sm, ufsm_action_t *a)
   printf("action func: \n");
   /* flag_action1_called = true; */
   /* count--; */
+
+  te_print(a->meta);
 
   te_eval(a->meta);
 
@@ -79,13 +90,15 @@ static struct ufsm_state A = {
 
 static struct ufsm_guard guard1 = {
     .f = &guard_func,
-    .meta = "count > 0",
+    .id = "count > 0",
+    .meta = NULL,
     .next = NULL,
 };
 
 static struct ufsm_action action1 = {
     .f = &action_func,
-    .meta = "count--",
+    .id = "count = count - 1",
+    .meta = NULL,
     .next = NULL,
 };
 
@@ -142,19 +155,33 @@ void print_state(void *ptr)
 int main(void)
 {
     // Init Data Model
-    int count = 5;
 
     int guard1_err = 0;
     int action1_err = 0;
-    te_variable vars[] = {{"count", &count, 0, 0}, };
 
     printf("guard mesg: %s : %p\n", guard1.meta, guard1.meta);
-    /* guard1.meta = te_compile(guard1.meta, vars, 1, &guard1_err); */
-    guard1.meta = te_compile("count > 0", vars, 1, &guard1_err);
-    printf("guard expr: %p\n", guard1.meta);
+
+    struct data_model data = {.count = 5};
+    data_model = &data;
+
+    te_variable vars[] = {{"count", &data.count, 0, 0}, };
+
+    // Guard
+    guard1.meta = te_compile(guard1.id, vars, 1, &guard1_err);
+    printf("guard expr:\n");
+    te_print(guard1.meta);
+
+    if (guard1_err)
+      printf("guard parse error: `%s` : %d\n", guard1.id, guard1_err);
     assert(guard1_err == 0 && "Initializing guard expr");
-    action1.meta = te_compile("count = count - 1", vars, 1, &action1_err);
-    printf("action error: `%s` : %d\n", "count = count - 1", action1_err);
+
+    // Action
+    action1.meta = te_compile(action1.id, vars, 1, &action1_err);
+    printf("action expr:\n");
+    te_print(action1.meta);
+
+    if (action1_err)
+      printf("action parse error: `%s` : %d\n", action1.id, action1_err);
     assert(action1_err == 0 && "Initializing action expr");
 
     // Init Test
