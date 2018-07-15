@@ -197,8 +197,8 @@ static te_value sub(te_value a, te_value b) {return a - b;}
 static te_value mul(te_value a, te_value b) {return a * b;}
 static te_value divide(te_value a, te_value b) {return a / b;}
 static te_value negate(te_value a) {return -a;}
-static te_value binv(te_value a) {return ~(uint32_t)a;}
-static te_value not(te_value a) {return !a;}
+static te_value binv(te_value a) {return ~((uint32_t)a);}
+static te_value not(te_value a) {return !(a);}
 static te_value comma(te_value a, te_value b) {(void)a; return b;}
 
 
@@ -442,9 +442,14 @@ static te_expr *base(state *s) {
 
 
 static te_expr *power(state *s) {
-    /* <power>     =    {("-" | "+")} <base> */
+    /* <power>     =             { ("-" | "+" | "~" | "!")}  <base> */
     int sign = 1;
-    while (s->type == TOK_INFIX && (s->function == add || s->function == sub)) {
+    while (s->type == TOK_INFIX
+           && (s->function == add
+               || s->function == sub
+               || s->function == not
+               || s->function == binv))
+    {
         if (s->function == sub) sign = -sign;
         next_token(s);
     }

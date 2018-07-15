@@ -219,27 +219,44 @@ void test_logics() {
 }
 
 void test_bitwise() {
-  test_case cases[] = {
-    {"1", 1},
-    {"1 ", 1},
-    {"(1)", 1},
-  };
+    test_case cases[] = {
+        {"1 & 1", 1},
+        {"0 & 1", 0},
+        {"1 & 0", 0},
+        {"-1 & -1", 4294967295.000000}, // overflows when type(te_value) == double
+        {"10 & 1", 0},
+
+        {"3 | 1", 3},
+        {"1 | 2", 3},
+
+        {"1 ^ 2", 3},
+        {"7 ^ 15", 8},
+
+        {"!2", 0},
+        {"!0", 1},
+        {"!-7", 0},
+
+        {"~2", 4294967293.000000},
+        {"~-2", 0.0},
+        {"~0", 4294967295.000000},
+
+    };
 
 
-  int i;
-  for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
-    const char *expr = cases[i].expr;
-    const double answer = cases[i].answer;
+    int i;
+    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+        const char *expr = cases[i].expr;
+        const double answer = cases[i].answer;
 
-    int err;
-    const double ev = te_interp(expr, &err);
-    lok(!err);
-    lfequal(ev, answer);
+        int err;
+        const double ev = te_interp(expr, &err);
+        lok(!err);
+        lfequaln(ev, answer, expr);
 
-    if (err) {
-      printf("FAILED: %s (%d)\n", expr, err);
+        if (err) {
+            printf("FAILED: %s (%d)\n", expr, err);
+        }
     }
-  }
 }
 
 void test_syntax() {
@@ -765,6 +782,7 @@ int main(int argc, char *argv[])
 {
     lrun("Results", test_results);
     lrun("Logics", test_logics);
+    lrun("Bitwise", test_bitwise);
     lrun("Syntax", test_syntax);
     lrun("NaNs", test_nans);
     lrun("INFs", test_infs);
