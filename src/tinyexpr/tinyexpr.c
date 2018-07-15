@@ -278,14 +278,16 @@ void next_token(state *s) {
 
                     case '&':
                       if (s->next[0] == '&') {
-                        s->type = TOK_INFIX; s->function = lor;
+                        s->type = TOK_INFIX; s->function = land;
                         s->next++;
+                      } else {
+                        s->type = TOK_INFIX; s->function = band;
                       }
                       break;
 
                     case '!':
                       if (s->next[0] == '=') {
-                        s->type = TOK_INFIX; s->function = lor;
+                        s->type = TOK_INFIX; s->function = ne;
                         s->next++;
                       } else {
                         s->type = TOK_INFIX; s->function = not;
@@ -318,7 +320,7 @@ void next_token(state *s) {
                         s->type = TOK_INFIX; s->function = lshift;
                         s->next++;
                       } else if (s->next[0] == '=') {
-                        s->type = TOK_INFIX; s->function = ge;
+                        s->type = TOK_INFIX; s->function = le;
                         s->next++;
                       } else {
                         s->type = TOK_INFIX; s->function = lt;

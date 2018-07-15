@@ -165,6 +165,82 @@ void test_results() {
     }
 }
 
+void test_logics() {
+    test_case cases[] = {
+        {"0 && 0", 0},
+        {"0 && 1", 0},
+        {"1 && 0", 0},
+        {"1 && 1", 1},
+        {"2 && 1", 1},
+        {"10 && 0", 0},
+
+        {"0 || 0", 0},
+        {"0 || 1", 1},
+        {"1 || 0", 1},
+        {"1 || 1", 1},
+        {"0 || 4", 1},
+
+        {"0 > 4", 0},
+        {"4 > 0", 1},
+        {"-4 > 0", 0},
+        {"0 > -4", 1},
+
+        {"4 < 0", 0},
+        {"0 < 3", 1},
+        {"0 < 3", 1},
+        {"-5 > -7", 1},
+
+        {"0 >= 0", 1},
+        {"33 >= 0", 1},
+        {"33 <= 0", 0},
+
+        {"33 == 0", 0},
+        {"33 == 33", 1},
+
+        {"33 != 0", 1},
+        {"33 != 33", 0},
+    };
+
+
+    int i;
+    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+        const char *expr = cases[i].expr;
+        const double answer = cases[i].answer;
+
+        int err;
+        const double ev = te_interp(expr, &err);
+        lok(!err);
+        lfequaln(ev, answer, expr);
+
+        if (err) {
+            printf("FAILED: %s (%d)\n", expr, err);
+        }
+    }
+}
+
+void test_bitwise() {
+  test_case cases[] = {
+    {"1", 1},
+    {"1 ", 1},
+    {"(1)", 1},
+  };
+
+
+  int i;
+  for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+    const char *expr = cases[i].expr;
+    const double answer = cases[i].answer;
+
+    int err;
+    const double ev = te_interp(expr, &err);
+    lok(!err);
+    lfequal(ev, answer);
+
+    if (err) {
+      printf("FAILED: %s (%d)\n", expr, err);
+    }
+  }
+}
 
 void test_syntax() {
     test_case errors[] = {
@@ -688,6 +764,7 @@ void test_combinatorics() {
 int main(int argc, char *argv[])
 {
     lrun("Results", test_results);
+    lrun("Logics", test_logics);
     lrun("Syntax", test_syntax);
     lrun("NaNs", test_nans);
     lrun("INFs", test_infs);
