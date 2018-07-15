@@ -175,18 +175,30 @@ static const te_variable *find_lookup(const state *s, const char *name, int len)
     return 0;
 }
 
+static te_value bor(te_value a, te_value b) {return (te_value) ((uint32_t)a | (uint32_t)b);}
+static te_value band(te_value a, te_value b) {return (te_value) ((uint32_t)a & (uint32_t)b);}
+static te_value bxor(te_value a, te_value b) {return (te_value) ((uint32_t)a ^ (uint32_t)b);}
+
+static te_value lor(te_value a, te_value b) {return (te_value) a || b;}
+static te_value land(te_value a, te_value b) {return (te_value) a && b;}
+
+static te_value lshift(te_value a, te_value b) {return (te_value) ((uint32_t)a << (uint32_t)b);}
+static te_value rshift(te_value a, te_value b) {return (te_value) ((uint32_t)a >> (uint32_t)b);}
 
 static te_value gt(te_value a, te_value b) {return (te_value) a > b;}
 static te_value lt(te_value a, te_value b) {return (te_value) a < b;}
 static te_value ge(te_value a, te_value b) {return (te_value) a >= b;}
 static te_value le(te_value a, te_value b) {return (te_value) a <= b;}
 static te_value eq(te_value a, te_value b) {return (te_value) a == b;}
+static te_value ne(te_value a, te_value b) {return (te_value) a != b;}
 
 static te_value add(te_value a, te_value b) {return a + b;}
 static te_value sub(te_value a, te_value b) {return a - b;}
 static te_value mul(te_value a, te_value b) {return a * b;}
 static te_value divide(te_value a, te_value b) {return a / b;}
 static te_value negate(te_value a) {return -a;}
+static te_value binv(te_value a) {return ~(uint32_t)a;}
+static te_value not(te_value a) {return !a;}
 static te_value comma(te_value a, te_value b) {(void)a; return b;}
 
 
@@ -243,6 +255,7 @@ void next_token(state *s) {
                     case '+': s->type = TOK_INFIX; s->function = add; break;
                     case '-': s->type = TOK_INFIX; s->function = sub; break;
                     case '/': s->type = TOK_INFIX; s->function = divide; break;
+                    case '*': s->type = TOK_INFIX; s->function = mul; break;
                     case '%': s->type = TOK_INFIX; s->function = fmod; break;
 
                   // syntax
@@ -252,8 +265,16 @@ void next_token(state *s) {
                     case ' ': case '\t': case '\n': case '\r': break;
 
                   // bitwise
-                    case '^': s->type = TOK_INFIX; s->function = bxor; break;
                     case '~': s->type = TOK_INFIX; s->function = binv; break;
+
+                    case '^':
+                      if (s->next[0] == '^') {
+                        s->type = TOK_INFIX; s->function = pow;
+                        s->next++;
+                      } else {
+                        s->type = TOK_INFIX; s->function = bxor;
+                      }
+                      break;
 
                     case '&':
                       if (s->next[0] == '&') {
@@ -277,15 +298,6 @@ void next_token(state *s) {
                         s->next++;
                       } else {
                         s->type = TOK_INFIX; s->function = bor;
-                      }
-                      break;
-
-                    case '*':
-                      if (s->next[0] == '*') {
-                        s->type = TOK_INFIX; s->function = pow;
-                        s->next++;
-                      } else {
-                        s->type = TOK_INFIX; s->function = mul;
                       }
                       break;
 
@@ -449,7 +461,7 @@ static te_expr *power(state *s) {
 
 #ifdef TE_POW_FROM_RIGHT
 static te_expr *factor(state *s) {
-    /* <factor>    =    <power> {"**" <power>} */
+    /* <factor>    =    <power> {"^^" <power>} */
     te_expr *ret = power(s);
 
     int neg = 0;
@@ -488,7 +500,7 @@ static te_expr *factor(state *s) {
 }
 #else
 static te_expr *factor(state *s) {
-    /* <factor>    =    <power> {"**" <power>} */
+    /* <factor>    =    <power> {"^^" <power>} */
     te_expr *ret = power(s);
 
     while (s->type == TOK_INFIX && (s->function == pow)) {
@@ -536,27 +548,6 @@ static te_expr *expr(state *s) {
 
     return ret;
 }
-
-static te_expr *logic(state *s) {
-  /* <logic>     =    <expr> {(">" | "<" | ">=" | "<=" | "==") <expr>} */
-  te_expr *ret = expr(s);
-
-  while (s->type == TOK_INFIX
-         && (s->function == gt
-             || s->function == lt
-             || s->function == ge
-             || s->function == le
-             || s->function == eq
-             )) {
-    te_fun2 t = s->function;
-    next_token(s);
-    ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, expr(s));
-    ret->function = t;
-  }
-
-  return ret;
-}
-
 
 static te_expr *shifts(state *s) {
   /* <shifts>   = <expr>      { ("<<" | ">>")             <expr>} */
