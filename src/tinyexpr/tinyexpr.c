@@ -442,7 +442,7 @@ static te_expr *base(state *s) {
 
 
 static te_expr *power(state *s) {
-    /* <power>     =             { ("-" | "+" | "~" | "!")}  <base> */
+    /* <power>     =             { ("-" | "+")}  <base> */
     int sign = 1;
     while (s->type == TOK_INFIX
            && (s->function == add
@@ -521,11 +521,31 @@ static te_expr *factor(state *s) {
 }
 #endif
 
+static te_expr *unary(state *s) {
+  /* <term>      =    <factor> {("!" | "~") <factor>} */
+  /* te_expr *ret = factor(s); */
+  te_expr *ret = NULL;
+
+  while (s->type == TOK_INFIX
+         && (s->function == binv || s->function == not))
+  {
+      te_fun2 t = s->function;
+      next_token(s);
+      ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, factor(s));
+      ret->function = t;
+  }
+
+  if (ret == NULL) {
+    ret = factor(s);
+  }
+
+  return ret;
+}
 
 
 static te_expr *term(state *s) {
     /* <term>      =    <factor> {("*" | "/" | "%") <factor>} */
-    te_expr *ret = factor(s);
+    te_expr *ret = unary(s);
 
     while (s->type == TOK_INFIX
            && (s->function == mul
@@ -534,7 +554,7 @@ static te_expr *term(state *s) {
     {
         te_fun2 t = s->function;
         next_token(s);
-        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, factor(s));
+        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, unary(s));
         ret->function = t;
     }
 

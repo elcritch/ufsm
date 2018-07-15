@@ -253,7 +253,8 @@ TinyExpr parses the following grammar:
     <relop'>    = <shifts>    { (">" | "<" | ">=" | "<=") <shifts>}
     <shifts'>   = <expr>      { ("<<" | ">>")             <expr>}
     <expr>      = <term>      { ("+" | "-")               <term>}
-    <term>      = <factor>    { ("*" | "/" | "%")         <factor>}
+    <term>      = <unary>     { ("*" | "/" | "%")         <unary>}
+    <unary>     = <factor>    { ("!" | "~")               <factor>}
     <factor>    = <power>     { "**"                      <power>}
     <power>     =             { ("-" | "+" | "~" | "!")}  <base>
     <base>      =    <constant>
