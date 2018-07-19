@@ -846,7 +846,7 @@ ufsm_status_t ufsm_init_machine(struct ufsm_machine* m)
     ufsm_status_t err = UFSM_OK;
 
     // Initialize Stacks
-    ufsm_stack_init(&(m->stack), UFSM_STACK_SIZE, (void **)m->stack_data);
+    ufsm_stack_init(&(m->stack), UFSM_STACK_SIZE, m->stack_data);
     ufsm_stack_init(&(m->completion_stack),
                     UFSM_COMPLETION_STACK_SIZE,
                     m->completion_stack_data);

@@ -10,6 +10,7 @@
 
 enum events
 {
+    EV_Z,
     EV_A,
     EV_B
 };
@@ -17,6 +18,7 @@ enum events
 struct data_model
 {
   int count;
+  int _event_data;
 };
 
 struct data_model *data_model;
@@ -56,9 +58,18 @@ static void action_func(ufsm_sm_t *sm, ufsm_action_t *a)
   /* flag_action1_called = true; */
   /* count--; */
 
-  te_print(a->meta);
+  if (sm->_event->data)
+    data_model->_event_data = *((int*)sm->_event->data);
+  else
+    data_model->_event_data = 0;
 
-  te_eval(a->meta);
+  if (a->meta != NULL) {
+    te_print(a->meta);
+
+    te_eval(a->meta);
+  } else {
+    assert(false);
+  }
 
   struct ufsm_queue* q = ufsm_get_queue(&m);
   ufsm_queue_put(q, EV_A);
@@ -102,11 +113,19 @@ static struct ufsm_action action1 = {
     .next = NULL,
 };
 
+static struct ufsm_action action_init = {
+  .f = &action_func,
+  .id = "count = _event.data",
+  .meta = NULL,
+  .next = NULL,
+};
+
 static struct ufsm_transition simple_transition_B = {
     .name = "EV_B",
     .trigger = EV_B,
     .kind = UFSM_TRANSITION_EXTERNAL,
     .source = &A,
+    .action = &action_init,
     .dest = &B,
     .next = NULL
 };
@@ -161,13 +180,17 @@ int main(void)
 
     printf("guard mesg: %s : %p\n", guard1.meta, guard1.meta);
 
-    struct data_model data = {.count = 5};
+    struct data_model data = {.count = 0};
     data_model = &data;
 
-    te_variable vars[] = {{"count", &data.count, 0, 0}, };
+    te_variable vars[] = {
+      {"count", &data.count, 0, 0},
+      {"_event.data", &data._event_data, 0, 0},
+      {NULL, NULL, 0, 0},
+    };
 
     // Guard
-    guard1.meta = te_compile(guard1.id, vars, 1, &guard1_err);
+    guard1.meta = te_compile(guard1.id, vars, 2, &guard1_err);
     printf("guard expr:\n");
     te_print(guard1.meta);
 
@@ -175,14 +198,25 @@ int main(void)
       printf("guard parse error: `%s` : %d\n", guard1.id, guard1_err);
     assert(guard1_err == 0 && "Initializing guard expr");
 
-    // Action
-    action1.meta = te_compile(action1.id, vars, 1, &action1_err);
+    // Action1
+    action1.meta = te_compile(action1.id, vars, 2, &action1_err);
     printf("action expr:\n");
     te_print(action1.meta);
 
     if (action1_err)
       printf("action parse error: `%s` : %d\n", action1.id, action1_err);
     assert(action1_err == 0 && "Initializing action expr");
+
+    // Action Init
+    action_init.meta = te_compile(action_init.id, vars, 2, &action1_err);
+
+    if (action1_err)
+      printf("action parse error: `%s` : %d\n", action_init.id, action1_err);
+
+    assert(action1_err == 0 && "Initializing action expr");
+    printf("action init expr:\n");
+    te_print(action_init.meta);
+
 
     // Init Test
     ufsm_status_t err;
@@ -204,7 +238,10 @@ int main(void)
     // Trans from A -> B
     /* reset_test_flags(); */
     printf("1. A -> B \n");
-    err = ufsm_process(&m, EV_B);
+    int count_init = 5;
+    struct ufsm_event item = {EV_B, &count_init};
+    err = ufsm_process_item(&m, item);
+
     assert(m.region->current == &B && err == UFSM_OK);
 
     // Trans from B -> A

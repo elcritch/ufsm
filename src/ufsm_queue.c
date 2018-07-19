@@ -39,6 +39,36 @@ static ufsm_status_t _ufsm_queue_put(struct ufsm_queue *q, struct ufsm_event ite
     return err;
 }
 
+static ufsm_status_t _ufsm_queue_insert(struct ufsm_queue *q, struct ufsm_event item)
+{
+  ufsm_status_t err = UFSM_OK;
+
+  if (q->lock)
+    q->lock();
+
+  if (q->size < q->no_of_elements) {
+    q->tail--;
+
+    if (q->tail > q->no_of_elements)
+      q->tail = 0;
+
+    q->data[q->tail] = item;
+    q->size++;
+
+    if (q->on_data)
+      q->on_data();
+  }
+  else
+    {
+      err = UFSM_ERROR_QUEUE_FULL;
+    }
+
+  if (q->unlock)
+    q->unlock();
+
+  return err;
+}
+
 static ufsm_status_t _ufsm_queue_get(struct ufsm_queue *q, struct ufsm_event *item)
 {
     ufsm_status_t err = UFSM_OK;
@@ -71,6 +101,12 @@ ufsm_status_t ufsm_queue_put(struct ufsm_queue *q, event_t ev)
     return _ufsm_queue_put(q, item);
 }
 
+ufsm_status_t ufsm_queue_insert(struct ufsm_queue *q, event_t ev)
+{
+  struct ufsm_event item = {.ev = ev, .data = NULL};
+  return _ufsm_queue_insert(q, item);
+}
+
 ufsm_status_t ufsm_queue_get(struct ufsm_queue *q, event_t *ev)
 {
     struct ufsm_event item;
@@ -82,6 +118,11 @@ ufsm_status_t ufsm_queue_get(struct ufsm_queue *q, event_t *ev)
 ufsm_status_t ufsm_queue_put_item(struct ufsm_queue *q, struct ufsm_event item)
 {
     return _ufsm_queue_put(q, item);
+}
+
+ufsm_status_t ufsm_queue_insert_item(struct ufsm_queue *q, struct ufsm_event item)
+{
+  return _ufsm_queue_insert(q, item);
 }
 
 ufsm_status_t ufsm_queue_get_item(struct ufsm_queue *q, struct ufsm_event *item)

@@ -323,9 +323,11 @@ ufsm_status_t ufsm_queue_init(struct ufsm_queue *q, uint32_t no_of_elements,
                                             struct ufsm_event *data);
 
 ufsm_status_t ufsm_queue_put(struct ufsm_queue *q, event_t ev);
+ufsm_status_t ufsm_queue_insert(struct ufsm_queue *q, event_t ev);
 ufsm_status_t ufsm_queue_get(struct ufsm_queue *q, event_t *ev);
 
 ufsm_status_t ufsm_queue_put_item(struct ufsm_queue *q, ufsm_event_item_t item);
+ufsm_status_t ufsm_queue_insert_item(struct ufsm_queue *q, ufsm_event_item_t item);
 ufsm_status_t ufsm_queue_get_item(struct ufsm_queue *q, ufsm_event_item_t *item);
 
 struct ufsm_queue * ufsm_get_queue(struct ufsm_machine *m);
