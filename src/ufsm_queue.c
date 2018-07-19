@@ -17,9 +17,9 @@ static ufsm_status_t _ufsm_queue_put(struct ufsm_queue *q, struct ufsm_event ite
     if (q->lock)
         q->lock();
 
-    if (q->s < q->no_of_elements) {
+    if (q->size < q->no_of_elements) {
         q->data[q->head] = item;
-        q->s++;
+        q->size++;
         q->head++;
 
         if (q->on_data)
@@ -46,9 +46,9 @@ static ufsm_status_t _ufsm_queue_get(struct ufsm_queue *q, struct ufsm_event *it
     if (q->lock)
         q->lock();
 
-    if (q->s) {
+    if (q->size) {
         *item = q->data[q->tail];
-        q->s--;
+        q->size--;
         q->tail++;
 
         if (q->tail >= q->no_of_elements)
@@ -95,7 +95,7 @@ ufsm_status_t ufsm_queue_init(struct ufsm_queue *q, uint32_t no_of_elements,
     q->head = 0;
     q->tail = 0;
     q->data = data;
-    q->s = 0;
+    q->size = 0;
     // q->on_data = NULL;
     // q->lock = NULL;
     // q->unlock = NULL;

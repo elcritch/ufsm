@@ -169,7 +169,7 @@ typedef struct ufsm_event ufsm_event_item_t;
 
 struct ufsm_queue {
     uint32_t no_of_elements;
-    uint32_t s;
+    uint32_t size;
     uint32_t head;
     uint32_t tail;
     struct ufsm_event *data;
