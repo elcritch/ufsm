@@ -39,6 +39,7 @@ For log = natural log uncomment the next line. */
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <limits.h>
 
 #ifndef NAN
@@ -196,6 +197,15 @@ static te_value add(te_value a, te_value b) {return a + b;}
 static te_value sub(te_value a, te_value b) {return a - b;}
 static te_value mul(te_value a, te_value b) {return a * b;}
 static te_value divide(te_value a, te_value b) {return a / b;}
+
+static te_value fn_pow(te_value a, te_value b) {return (te_value)pow(a,b);}
+
+#ifdef TE_VALUE_IS_FLOAT 
+static te_value fn_mod(te_value a, te_value b) {return (te_value)fmod(a,b);}
+#elif defined TE_VALUE_IS_INTEGER 
+static te_value fn_mod(te_value a, te_value b) {return (te_value)(a % b);}
+#endif
+
 static te_value negate(te_value a) {return -a;}
 static te_value binv(te_value a) {return ~((uint32_t)a);}
 static te_value not(te_value a) {return !(a);}
@@ -261,7 +271,7 @@ void next_token(state *s) {
                     case '-': s->type = TOK_INFIX; s->function = sub; break;
                     case '/': s->type = TOK_INFIX; s->function = divide; break;
                     case '*': s->type = TOK_INFIX; s->function = mul; break;
-                    case '%': s->type = TOK_INFIX; s->function = fmod; break;
+                    case '%': s->type = TOK_INFIX; s->function = fn_mod; break;
 
                   // syntax
                     case '(': s->type = TOK_OPEN; break;
@@ -274,7 +284,7 @@ void next_token(state *s) {
 
                     case '^':
                       if (s->next[0] == '^') {
-                        s->type = TOK_INFIX; s->function = pow;
+                        s->type = TOK_INFIX; s->function = fn_pow;
                         s->next++;
                       } else {
                         s->type = TOK_INFIX; s->function = bxor;
@@ -515,7 +525,7 @@ static te_expr *factor(state *s) {
     /* <factor>    =    <power> {"^^" <power>} */
     te_expr *ret = power(s);
 
-    while (s->type == TOK_INFIX && (s->function == pow)) {
+    while (s->type == TOK_INFIX && (s->function == fn_pow)) {
         te_fun2 t = s->function;
         next_token(s);
         ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, power(s));
@@ -555,7 +565,7 @@ static te_expr *term(state *s) {
     while (s->type == TOK_INFIX
            && (s->function == mul
                || s->function == divide
-               || s->function == fmod))
+               || s->function == fn_mod))
     {
         te_fun2 t = s->function;
         next_token(s);

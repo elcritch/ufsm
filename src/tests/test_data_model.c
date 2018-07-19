@@ -178,7 +178,7 @@ int main(void)
     int guard1_err = 0;
     int action1_err = 0;
 
-    printf("guard mesg: %s : %p\n", guard1.meta, guard1.meta);
+    printf("guard mesg: %p\n", guard1.meta);
 
     struct data_model data = {.count = 0};
     data_model = &data;

@@ -25,8 +25,10 @@ UFSMIMPORT ?= ufsmimport
 
 UFSM_TESTS_VERBOSE ?= false
 
+LDFLAGS ?= -lm
+
 ifdef COVERAGE
-LDFLAGS = -lgcov
+LDFLAGS += -lgcov
 endif
 
 

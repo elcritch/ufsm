@@ -32,6 +32,9 @@ extern "C" {
 
 #ifndef TE_VALUE_TYPE
 #define TE_VALUE_TYPE double
+#define TE_VALUE_IS_FLOAT true
+#elif TE_VALUE_TYPE == int
+#define TE_VALUE_IS_INTEGER true
 #endif
 
 typedef TE_VALUE_TYPE te_value;
