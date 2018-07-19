@@ -168,10 +168,11 @@ struct ufsm_event {
 typedef struct ufsm_event ufsm_event_item_t;
 
 struct ufsm_queue {
-    uint32_t no_of_elements;
-    uint32_t size;
-    uint32_t head;
-    uint32_t tail;
+    uint8_t no_of_elements;
+    uint8_t size;
+    uint8_t head;
+    uint8_t tail;
+
     struct ufsm_event *data;
     ufsm_queue_cb_t on_data;
     ufsm_queue_cb_t lock;
@@ -200,12 +201,16 @@ struct ufsm_machine
     struct ufsm_machine_debug debug;
 #endif
 
+    // State Machine Info
     bool terminated;
     struct ufsm_event *_event;
-
     void *data_model;
+
+    // Internal Completion Info
     void *stack_data[UFSM_STACK_SIZE];
     void *completion_stack_data[UFSM_COMPLETION_STACK_SIZE];
+
+    // Queue Info
     struct ufsm_event queue_data[UFSM_QUEUE_SIZE];
     struct ufsm_event defer_queue_data[UFSM_DEFER_QUEUE_SIZE];
 
