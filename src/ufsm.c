@@ -956,6 +956,8 @@ ufsm_status_t ufsm_process_item(struct ufsm_machine* m,
 
     ufsm_find_active_regions(m, &region_count);
 
+    m->_event = &item;
+
     for (uint32_t i = 0; i < region_count; i++)
     {
         err = ufsm_stack_pop(&m->stack, (void**)&region);
@@ -986,6 +988,8 @@ ufsm_status_t ufsm_process_item(struct ufsm_machine* m,
 
     if (!event_consumed && err == UFSM_OK)
         err = UFSM_ERROR_EVENT_NOT_PROCESSED;
+
+    m->_event = NULL;
 
     return err;
 }

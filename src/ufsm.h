@@ -201,6 +201,7 @@ struct ufsm_machine
 #endif
 
     bool terminated;
+    struct ufsm_event *_event;
 
     void *data_model;
     void *stack_data[UFSM_STACK_SIZE];
