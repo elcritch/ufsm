@@ -938,8 +938,9 @@ bool ufsm_transition(struct ufsm_machine* m,
 }
 
 ufsm_status_t ufsm_process_item(struct ufsm_machine* m,
-                                struct ufsm_event item)
+                                struct ufsm_event event_item)
 {
+    struct ufsm_event item = event_item; // in case C compiler elides arg memory (?)
     ufsm_status_t err = UFSM_OK;
     uint32_t region_count = 0;
     struct ufsm_region* region = NULL;
