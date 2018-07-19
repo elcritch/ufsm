@@ -252,14 +252,17 @@ int main(void)
     assert(m.region->current == &B && err == UFSM_OK);
 
     int limit = 0;
+    int test_count = 0;
 
     // TODO: ufsm_process_done() function (?)
     while ((err = ufsm_process_queue(&m)) == UFSM_OK && limit++ < 20)
     {
+        test_count++;
         printf("2.1 B -> A \n");
         print_state(m.region->current);
     }
 
+    assert(test_count == count_init);
     assert(limit < 20);
     assert(m.region->current == &A);
 
