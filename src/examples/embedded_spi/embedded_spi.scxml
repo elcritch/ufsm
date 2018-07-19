@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scxml initial="intact">
+
+    <datamodel>
+    <data id="position" expr="null"/>
+    <data id="element"/>
+  </datamodel>
+  
+  <state id="idle">
+    <transition event="mousedown" target="dragging">
+      <assign location="position" expr="{x: _event.data.x, y: _event.data.y}"/>
+      <assign location="element" expr="_event.data.el"/>
+    </transition>
+  </state>
+  
+  <state id="dragging">
+    <transition event="mouseup" target="idle"/>
+    <transition event="mousemove" target="dragging">
+      <assign location="position" expr="{x: _event.data.x, y: _event.data.y}"/>
+      <script>
+        element.style.left = position.x + 'px';
+        element.style.top = position.y + 'px';
+      </script>
+    </transition>
+  </state>
+
+</scxml>
