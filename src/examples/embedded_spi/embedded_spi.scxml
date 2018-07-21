@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<scxml initial="intact">
+<scxml initial="idle">
 
-    <datamodel>
+  <datamodel>
+    <!-- tinyexpr datamodel only uses all floats, or all ints -->
+    <data id="spi_buf"/>
     <data id="position" expr="null"/>
-    <data id="element"/>
   </datamodel>
   
   <state id="idle">
-    <transition event="mousedown" target="dragging">
-      <assign location="position" expr="{x: _event.data.x, y: _event.data.y}"/>
-      <assign location="element" expr="_event.data.el"/>
-    </transition>
+    <transition event="spi_trx" target="dragging"/>
   </state>
   
-  <state id="dragging">
-    <transition event="mouseup" target="idle"/>
-    <transition event="mousemove" target="dragging">
-      <assign location="position" expr="{x: _event.data.x, y: _event.data.y}"/>
-      <script>
-        element.style.left = position.x + 'px';
-        element.style.top = position.y + 'px';
-      </script>
-    </transition>
-  </state>
+  <state id="adc">
 
+    <state id="mux_read" initial="mux">
+
+      <state id="mux">
+        <assign location="spi_buff" expr="spi_xfer(mux)"/>
+        <send event="adc.next" delayexpr="time_sync"/>
+        <transition event="adc.next" target="sync"/>
+      </state>
+
+      <state id="sync">
+        <assign location="spi_buff" expr="spi_xfer(sync)"/>
+        <send event="adc.next" delayexpr="time_sync"/>
+        <transition event="adc.next" target="wakeup"/>
+      </state>
+
+      <state id="wakeup">
+        <assign location="spi_buff" expr="spi_xfer(sync)"/>
+        <send event="adc.next" delayexpr="time_rdata"/>
+        <transition event="adc.next" target="rdata"/>
+      </state>
+
+      <state id="rdata">
+        <assign location="spi_buff" expr="spi_xfer(rdata)"/>
+        <assign location="spi_buff" expr="spi_read(3)"/>
+        <assign location="ts" expr="system_time()"/>
+        <send target="system" type="msgpack" namelist="ts spi_buff"/>
+      </state>
+
+    </state>
+  </state>
 </scxml>
