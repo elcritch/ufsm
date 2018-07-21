@@ -3,9 +3,15 @@
 <scxml initial="idle">
 
   <datamodel>
-    <!-- tinyexpr datamodel only uses all floats, or all ints -->
-    <data id="spi_buf"/>
-    <data id="position" expr="null"/>
+    <!-- tinyexpr datamodel only uses all ints -->
+    <data id="spi_buf" expr="0"/>
+    <data id="mux" expr="0"/>
+    <data id="sync" expr="0"/>
+    <data id="rdata" expr="0"/>
+    <data id="wakeup" expr="0"/>
+    <data id="time_data" expr="0"/>
+    <data id="time_sync" expr="0"/>
+    <data id="ts" expr="0"/>
   </datamodel>
   
   <state id="idle">
@@ -29,8 +35,8 @@
       </state>
 
       <state id="wakeup">
-        <assign location="spi_buff" expr="spi_xfer(sync)"/>
-        <send event="adc.next" delayexpr="time_rdata"/>
+        <assign location="spi_buff" expr="spi_xfer(wakeup)"/>
+        <send event="adc.next" delayexpr="time_data"/>
         <transition event="adc.next" target="rdata"/>
       </state>
 
